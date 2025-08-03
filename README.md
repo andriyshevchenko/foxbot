@@ -1,4 +1,5 @@
 # 🦊 Foxbot — Compose Browser Automation, Declaratively
+![CI](https://github.com/andriyshevchenko/foxbot/actions/workflows/ci.yml/badge.svg)
 
 **Foxbot** is a minimal, composable automation framework built on **Playwright**.  
 It lets you express browser workflows as **objects**, not scripts—splitting _what_ you want from _how_ to do it.
