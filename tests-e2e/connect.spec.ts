@@ -16,9 +16,12 @@ test.describe("connect if recent", () => {
         <div class="last-post"><time>10 days ago</time></div>
         <button class="connect">Connect</button>
         <script>
-          document.querySelector('.connect')!.addEventListener('click', () => {
-            document.body.setAttribute('data-connected','1');
-          });
+           const btn = document.querySelector('.connect');
+           if (btn) {
+               btn.addEventListener('click', () => {
+                   document.body.setAttribute('data-connected','1');
+               });
+           }
         </script>
       </body></html>
     `);
@@ -45,9 +48,12 @@ test.describe("connect if recent", () => {
         <div class="last-post"><time>200 days ago</time></div>
         <button class="connect">Connect</button>
         <script>
-          document.querySelector('.connect')!.addEventListener('click', () => {
-            document.body.setAttribute('data-connected','1');
-          });
+           const btn = document.querySelector('.connect');
+           if (btn) {
+               btn.addEventListener('click', () => {
+                   document.body.setAttribute('data-connected','1');
+               });
+           }
         </script>
       </body></html>
     `);
