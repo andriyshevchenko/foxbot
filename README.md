@@ -1,93 +1,97 @@
-# Foxbot — Declarative Automation on Playwright
+# 🦊 Foxbot — Compose Browser Automation, Declaratively
 
-**Foxbot** is a lightweight, open‑source framework that builds **declarative, composable, reusable, testable workflows** on top of Playwright.  
-Instead of writing long, procedural, line‑by‑line scripts, you assemble **objects** that either **read** facts (Queries) or **do** things (Actions), and compose them into higher‑level behaviors.
+**Foxbot** is a minimal, composable automation framework built on **Playwright**.  
+It lets you express browser workflows as **objects**, not scripts—splitting _what_ you want from _how_ to do it.
 
-> TL;DR: stop scripting, start composing.
-
----
-
-## Why
-
-Traditional browser automation mixes **what** you want with **how** to do it (imperative steps). This makes code brittle, hard to reuse, and hard to test.  
-Foxbot follows the _Elegant Objects_ style to split behavior into:
-
-- **Queries** (builders): _pure_ objects with one public method `value(): Promise<T>` that compute or read values (e.g., text of an element).
-- **Actions** (manipulators): _side‑effecting_ objects with one public method `perform(): Promise<void>` that change the world (e.g., click a button).
-
-You then **compose** them (e.g., `Sequence`, `When`, `Delay`) to define robust workflows for E2E testing, scraping, and automation.
+> 💡 TL;DR: Stop scripting. Start composing.
 
 ---
 
-## Key ideas
+## 🧠 Why Foxbot?
 
-- **Declarative by composition** — compose small objects into workflows; no giant functions.
-- **Reusable** — the same Actions/Queries are used across tests and bots.
-- **Testable** — Queries are pure and easy to unit test; Actions can be exercised in E2E.
-- **Deterministic** — prefer Playwright `Locator` auto‑waits over sleeps/timeouts.
-- **Readable** — supports _Paired Brackets_ formatting to visualize nested composition.
+Browser scripts often mix logic, state, and sequencing—making them fragile and hard to test.  
+**Foxbot** fixes this by embracing object composition over imperative control flow.
+
+We model two primitives:
+
+- ✅ **Queries** — pure, stateless readers with `.value(): Promise<T>`
+- ⚡ **Actions** — side-effecting operations with `.perform(): Promise<void>`
+
+These building blocks compose naturally into robust, **reusable**, and **testable** automations.
 
 ---
 
-## Example (connect only if the user posted recently)
+## 🧩 Key Concepts
+
+| Feature        | Description                                                                 |
+|----------------|-----------------------------------------------------------------------------|
+| 🔁 Composable   | Build behavior from small, testable building blocks                         |
+| 🔍 Declarative  | Describe intent, not steps                                                  |
+| ♻️ Reusable     | Use the same Queries and Actions across tests and workflows                |
+| 🧪 Testable     | Queries are pure: unit-test them easily                                     |
+| ⏱ Deterministic | Leverages Playwright’s built-in auto-waiting via `Locator`s                |
+| 📖 Readable     | Supports “Paired Brackets” formatting for visual nesting clarity            |
+
+---
+
+## 🚀 Example: Connect If Recent
 
 ```ts
-import { PageSession, Locator } from "./foxbot/playwright";
-import { TextOf } from "./foxbot/builders/text_of";
-import { ParsedDatetime } from "./foxbot/builders/parsed_datetime";
-import { Now } from "./foxbot/builders/now";
-import { DaysBetween } from "./foxbot/builders/days_between";
-import { LessThan } from "./foxbot/builders/less_than";
-import { NumberLiteral } from "./foxbot/core/number";
-import { Click } from "./foxbot/actions/click";
-import { When } from "./foxbot/actions/when";
-
-async function connectIfRecent(session: PageSession) {
-  await new When(
-    new LessThan(
-      new DaysBetween(
-        new ParsedDatetime(new TextOf(new Locator(session, "div.last-post time"))),
-        new Now()
+await new When(
+  new LessThan(
+    new DaysBetween(
+      new ParsedDatetime(
+        new TextOf(new Locator(session, "div.last-post time"))
       ),
-      new NumberLiteral(30)
+      new Now()
     ),
-    new Click(new Locator(session, "button.connect"))
-  ).perform();
-}
+    new NumberLiteral(30)
+  ),
+  new Click(new Locator(session, "button.connect"))
+).perform();
 ```
+> ✔️ Declarative: No `if`, no `Date`, no `await` chains—just pure behavior objects.
 
 ---
 
-## Folder conventions
+## 📁 Project Structure
 
-- `foxbot/core` — interfaces: `Query<T>`, `Action`.
-- `foxbot/builders` — **Queries** (pure): `TextOf`, `Presence`, `DaysBetween`, etc.
-- `foxbot/actions` — **Actions** (effects): `Click`, `Fill`, `Navigate`, `Sequence`, `When`.
-- `foxbot/playwright` — thin adapters for Playwright (`PageSession`, `Locator`).
-
-Unit tests live in `tests/**` (Vitest). E2E specs live in `tests-e2e/**` (Playwright Test).
-
----
-
-## Extending
-
-1. Add a new **Query** for any value you need (e.g., `AttributeOf`, `InnerHTMLOf`).
-2. Add a new **Action** for any effect (e.g., `Upload`, `ScrollIntoView`).
-3. Compose with `Sequence` and `When` to define a workflow.
-4. Unit test Queries; validate end‑to‑end in Playwright Test.
+| Folder               | Contents                                                              |
+|----------------------|-----------------------------------------------------------------------|
+| `core/`              | Interfaces: `Query<T>`, `Action`                                      |
+| `builders/`          | Queries like `TextOf`, `DaysBetween`, `Presence`, etc.                |
+| `actions/`           | Actions like `Click`, `Fill`, `Sequence`, `When`, etc.                |
+| `playwright/`        | Thin adapters: `Locator`, `PageSession`                               |
+| `tests/`, `tests-e2e/` | Unit and integration tests using Vitest and Playwright Test        |
 
 ---
 
-## Design rules (short form)
+## 🛠️ Extend Foxbot
 
-- **Queries**: one public method `value()`, no side effects, no `any`.
-- **Actions**: one public method `perform()`, return `void`, no data return in chain.
-- Prefer `Locator` over `ElementHandle`; avoid `page.waitForTimeout`.
-- Keep classes small (≤4 fields), one class per file, named exports only.
-- No implementation inheritance, no “utils” dumping grounds; favor composition.
+1. **Create a Query** — e.g., `AttributeOf`, `InnerHTMLOf`
+2. **Create an Action** — e.g., `UploadFile`, `ScrollToBottom`
+3. **Compose behavior** — via `Sequence`, `When`, etc.
+4. **Write tests** — unit test Queries, run Actions in E2E flows
 
 ---
 
-## Status
+## 📏 Design Rules
 
-The framework is intentionally minimal and extensible. Contributions welcome—see `docs/` and the AI rules in `.ai/` for style and architectural constraints.
+- Queries: pure, no side effects, expose `.value()`
+- Actions: side effects only, expose `.perform()`, return `void`
+- No `any`, no utils folders, no inheritance trees—favor composition
+- Prefer `Locator` over `ElementHandle`; avoid hardcoded timeouts
+- One class per file, ≤ 4 fields per class
+
+---
+
+## 📦 Status
+
+Foxbot is small by design and easy to extend.  
+Want to contribute? Check out `docs/` and the `.ai/` design rules before submitting PRs.
+
+---
+
+## 💬 Philosophy
+
+> Foxbot brings the composability of functional programming into UI automation—bridging the gap between tests, bots, and domain logic.
