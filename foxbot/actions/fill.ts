@@ -1,0 +1,1 @@
+import { Action, Query } from '../core'; export class Fill implements Action{ constructor(private readonly el:any, private readonly t:Query<string>){} async perform(){ await (await this.el.value()).fill(await this.t.value()); } }

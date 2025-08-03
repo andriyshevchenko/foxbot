@@ -1,0 +1,1 @@
+import { Query } from '../core'; export class LessThan implements Query<boolean>{ constructor(private readonly a:Query<number>, private readonly b:Query<number>){} async value(){ return (await this.a.value()) < (await this.b.value()); } }

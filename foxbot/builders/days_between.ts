@@ -1,0 +1,1 @@
+import { Query } from '../core'; export class DaysBetween implements Query<number>{ constructor(private readonly s:Query<Date>, private readonly e:Query<Date>){} async value(){ const S=await this.s.value(); const E=await this.e.value(); return Math.floor((E.getTime()-S.getTime())/(24*60*60*1000)); } }

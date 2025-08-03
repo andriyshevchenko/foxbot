@@ -1,0 +1,48 @@
+{
+  "name": "foxbot",
+  "version": "0.2.0",
+  "type": "commonjs",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --reporter=dot",
+    "test:watch": "vitest",
+    "start": "tsx script_connect_if_recent.ts",
+    "start:built": "node dist/script_connect_if_recent.js",
+    "prepare": "husky install",
+    "postinstall": "playwright install chromium",
+    "test:e2e": "playwright test",
+    "test:e2e:watch": "vitest --config vitest.e2e.config.ts",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "codegen": "playwright codegen",
+    "pw:report": "playwright show-report"
+  },
+  "dependencies": {
+    "playwright": "^1.45.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "typescript": "^5.5.4",
+    "tsx": "^4.16.2",
+    "eslint": "^9.6.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "prettier": "^3.3.3",
+    "eslint-config-prettier": "^9.1.0",
+    "vitest": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
+    "@playwright/test": "^1.45.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

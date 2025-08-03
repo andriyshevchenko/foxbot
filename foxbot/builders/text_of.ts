@@ -1,0 +1,1 @@
+import { Query } from '../core'; export class TextOf implements Query<string>{ constructor(private readonly el:Query<any>){} async value(){ const h=await this.el.value(); const txt=await h.textContent(); return (txt??'').trim(); } }
