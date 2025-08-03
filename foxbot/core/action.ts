@@ -1,1 +1,3 @@
-export interface Action{ perform(): Promise<void>; }
+export interface Action {
+  perform(): Promise<void>;
+}

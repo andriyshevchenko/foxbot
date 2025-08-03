@@ -1,1 +1,12 @@
-import { Action, Query } from '../core'; export class Fill implements Action{ constructor(private readonly el:any, private readonly t:Query<string>){} async perform(){ await (await this.el.value()).fill(await this.t.value()); } }
+import type { Locator as PwLocator } from "playwright";
+import { Action, Query } from "../core";
+
+export class Fill implements Action {
+  constructor(
+    private readonly element: Query<PwLocator>,
+    private readonly text: Query<string>
+  ) {}
+  async perform(): Promise<void> {
+    await (await this.element.value()).fill(await this.text.value());
+  }
+}

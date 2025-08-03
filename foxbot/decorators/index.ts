@@ -1,1 +1,2 @@
-export * from './logged_action'; export * from './safe_text';
+export * from "./logged_action";
+export * from "./safe_text";

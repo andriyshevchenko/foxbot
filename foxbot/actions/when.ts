@@ -1,1 +1,12 @@
-import { Action, Query } from '../core'; export class When implements Action{ constructor(private readonly p:Query<boolean>, private readonly t:Action){} async perform(){ if(await this.p.value()){ await this.t.perform(); } } }
+import { Action, Query } from "../core";
+export class When implements Action {
+  constructor(
+    private readonly p: Query<boolean>,
+    private readonly t: Action
+  ) {}
+  async perform() {
+    if (await this.p.value()) {
+      await this.t.perform();
+    }
+  }
+}

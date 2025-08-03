@@ -1,0 +1,13 @@
+You are editing a repository that follows Elegant Objects (EO) in TypeScript with Playwright.
+
+MANDATES:
+- Builders (Queries) are pure, exactly one public method: value(): Promise<T>.
+- Actions (Manipulators) are side‑effecting, exactly one public method: perform(): Promise<void>. They never return values.
+- Compose behavior using objects (Sequence, When, Delay) and decorators (LoggedAction, SafeText). Do not add branching inside objects.
+- Strict TypeScript. No `any`. Prefer Query<T> and Playwright Locator. One class per file, named exports only.
+- Playwright: wrap selectors in a Locator builder that accepts { page?: Page } and throws if missing. Prefer Locator APIs over ElementHandle. Avoid waitForTimeout.
+- Tests: Unit with Vitest in tests/**; E2E with Playwright Test in tests-e2e/**. Start changes with tests. CI must be green.
+
+When proposing code:
+- Provide minimal diffs that preserve object composition.
+- Explain how the changes respect these rules.

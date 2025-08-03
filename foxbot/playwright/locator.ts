@@ -1,7 +1,17 @@
-import type { Locator as PwLocator } from 'playwright';
-import { Query } from '../core';
-import { PageSession } from './session';
-export class Locator implements Query<PwLocator>{
-  constructor(private readonly session:PageSession, private readonly selector:string){}
-  async value(){ if(!this.session.page) throw new Error('Session page not started.'); return this.session.page.locator(this.selector); }
+import type { Locator as PwLocator, Page } from "playwright";
+import { Query } from "../core";
+
+type HasMaybePage = { page?: Page };
+
+export class Locator implements Query<PwLocator> {
+  constructor(
+    private readonly ctx: HasMaybePage,
+    private readonly selector: string
+  ) {}
+
+  async value(): Promise<PwLocator> {
+    const page = this.ctx.page;
+    if (!page) throw new Error("Session page not started.");
+    return page.locator(this.selector);
+  }
 }

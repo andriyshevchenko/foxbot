@@ -1,0 +1,64 @@
+{
+  "architecture": {
+    "tests_first": true,
+    "ci_must_be_green": true,
+    "composition_over_inheritance": true,
+    "avoid_branching_inside_objects": true
+  },
+  "interfaces": {
+    "query": {
+      "name": "Query",
+      "method": "value",
+      "return": "Promise<T>",
+      "side_effects": false,
+      "single_public_method": true
+    },
+    "action": {
+      "name": "Action",
+      "method": "perform",
+      "return": "Promise<void>",
+      "side_effects": true,
+      "single_public_method": true,
+      "no_return_values": true
+    }
+  },
+  "typescript": {
+    "strict": true,
+    "no_any": true,
+    "one_class_per_file": true,
+    "named_exports_only": true,
+    "avoid_inheritance": true,
+    "avoid_utils_modules": true,
+    "prefer_immutability": true
+  },
+  "playwright": {
+    "use_locator": true,
+    "locator_accepts": "{ page?: Page }",
+    "throw_if_page_missing": true,
+    "builders_depend_on_query_locator": true,
+    "actions_accept_query_locator": true,
+    "avoid_element_handle_when_possible": true,
+    "avoid_wait_for_timeout": true
+  },
+  "testing": {
+    "unit_runner": "vitest",
+    "e2e_runner": "playwright",
+    "unit_path": "tests/**",
+    "e2e_path": "tests-e2e/**",
+    "do_not_run_e2e_in_vitest": true,
+    "prefer_single_assertion": true,
+    "avoid_log_assertions": true
+  },
+  "ci_ops": {
+    "eslint_flat_config": "eslint.config.mjs",
+    "prettier_major": 3,
+    "commit_lockfile": true,
+    "use_npm_ci": true,
+    "fast_pre_commit": true
+  },
+  "change_control": {
+    "second_public_method_requires_approval": true,
+    "action_return_values_forbidden": true,
+    "inheritance_requires_approval": true
+  }
+}

@@ -1,1 +1,3 @@
-export interface Query<T>{ value(): Promise<T>; }
+export interface Query<T> {
+  value(): Promise<T>;
+}

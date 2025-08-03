@@ -1,1 +1,12 @@
-import { Action, Query } from '../core'; import { PageSession } from '../playwright'; export class Navigate implements Action{ constructor(private readonly s:PageSession, private readonly u:Query<string>){} async perform(){ if(!this.s.page) throw new Error('Session not started.'); await this.s.page.goto(await this.u.value()); } }
+import { Action, Query } from "../core";
+import { PageSession } from "../playwright";
+export class Navigate implements Action {
+  constructor(
+    private readonly s: PageSession,
+    private readonly u: Query<string>
+  ) {}
+  async perform() {
+    if (!this.s.page) throw new Error("Session not started.");
+    await this.s.page.goto(await this.u.value());
+  }
+}
