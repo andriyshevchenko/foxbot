@@ -1,55 +1,35 @@
-# Agent‑Agnostic Rules (EO‑style, TypeScript + Playwright)
+# Agent-Agnostic Rules (Foxbot, EO-style, TypeScript + Playwright)
 
-These rules are **tool‑neutral** and intended for any coding agent (Cursor, Windsurf, Copilot, Codeium, etc.).
-They adapt the Elegant Objects (EO) principles to this TypeScript/Playwright codebase and supersede any previous generic rules.
+These rules are tool-neutral for any coding agent/editor.
 
-## 0) Ground rules (tests‑first, CI‑green, composition)
+## A. Architectural axioms (EO split)
 
-1. **Tests first**: Every bug fix starts with a failing unit test; every feature starts with a test.
-2. **CI must be green** before review/merge.
-3. **Composition over branching & inheritance**: Use small objects that compose (e.g., `Sequence`, `When`, decorators). Avoid ad‑hoc if/else inside objects; keep decision logic in composition.
+1. **Queries (builders)** are pure objects with exactly one public method: `value(): Promise<T>`.
+2. **Actions (manipulators)** are side-effecting objects with exactly one public method: `perform(): Promise<void>` and **never return values**.
+3. Composition over branching: prefer `Sequence`, `When`, `Delay` and decorators (e.g., `LoggedAction`, `SafeText`) instead of adding logic branches inside objects.
 
-## 1) CQRS in objects (builders vs actions)
+## B. Strict code style (EO-inspired)
 
-- **Builders (Queries)**: pure objects, one public method `value(): Promise<T>`; no side effects.
-- **Actions (Manipulators)**: side‑effecting objects, one public method `perform(): Promise<void>`; **never return values**.
-- Pass data by composing builders, not by returning values from actions.
+- No setters; avoid getters. Favor immutability (`readonly` fields).
+- No implementation inheritance; prefer composition. Classes are effectively “final.”
+- No static “utils” bags. One class per file. Named exports only.
+- Class names don’t end in “-er”. Variables are single nouns; methods single verbs; CQRS: builders noun-like ok, actions verb.
+- Constructors do assignments only; prefer one primary constructor.
+- Objects small (≤4 fields). At least one encapsulated field.
+- No `null` in arguments/returns. Avoid type introspection/casts/reflection.
+- Paired Brackets format is allowed to show deep composition in scripts.
+- Method bodies concise; error/log messages: single sentence, no trailing period.
+- Public methods should implement interfaces (`Query<T>`, `Action`).
 
-## 2) TypeScript discipline
+## C. TypeScript + Playwright
 
-- `strict: true`; **no `any`** in source. Use `Query<T>`, `Action`, and Playwright’s `Locator` types.
-- One class per file; named exports only; avoid default exports.
-- Avoid implementation inheritance and “utils” modules; prefer composition of objects.
-- Favor immutability: no reassigning object fields after construction; constructors do assignments only.
+- `strict: true`; **no `any`** in source. Use `Query<T>` and Playwright `Locator`.
+- Builders that read DOM: depend on `Query<Locator>`; Actions that manipulate DOM: accept `Query<Locator>`.
+- Prefer `Locator` APIs over `ElementHandle`; avoid `page.waitForTimeout`.
 
-## 3) Playwright integration
+## D. Testing & CI
 
-- Encapsulate selectors in a `Locator` builder that accepts `{ page?: Page }` and throws if missing.
-- Builders that **read** DOM depend on `Query<Locator>` (e.g., `TextOf`, `Presence`).
-- Actions that **change** DOM accept `Query<Locator>` (e.g., `Click`, `Fill`).
-- Prefer `Locator` methods over `ElementHandle`. No `page.waitForTimeout`; rely on locator auto‑wait and test assertions.
-
-## 4) Testing layout & style
-
-- **Unit**: under `tests/**` with **Vitest**; do not import Playwright.
-- **E2E**: under `tests-e2e/**` with **Playwright Test** only.
-- Keep tests short and deterministic. Prefer a single assertion as the last statement when reasonable.
-- Prefer fakes/stubs over heavy mocks. Don’t assert on logs.
-- Name tests as clear English sentences describing behavior.
-
-## 5) Docs & messaging
-
-- Brief JSDoc above classes/methods explains purpose and usage. Avoid repeating implementation details.
-- Error/log messages: one sentence, no trailing period; precise and actionable.
-
-## 6) CI & ops
-
-- ESLint 9 flat config (`eslint.config.mjs`) and Prettier 3 are authoritative.
-- Commit `package-lock.json`; CI uses `npm ci`.
-- Keep pre‑commit fast (lint‑staged). Heavier checks (typecheck/tests) run on pre‑push or CI.
-
-## 7) Changes needing explicit approval
-
-- Adding a second public method to any builder/action.
-- Returning data from an action.
-- Introducing inheritance or new “utils” helpers that bypass objects.
+- **Tests-first**: every bug/feature starts with a test.
+- Unit: `tests/**` with Vitest (no Playwright imports).
+- E2E: `tests-e2e/**` with Playwright Test; do not run E2E under Vitest.
+- CI must be green before review; commit `package-lock.json`; use `npm ci`.

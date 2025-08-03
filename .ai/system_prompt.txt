@@ -1,13 +1,21 @@
-You are editing a repository that follows Elegant Objects (EO) in TypeScript with Playwright.
+You are editing a repository that follows an EO-style architecture on top of Playwright.
 
-MANDATES:
-- Builders (Queries) are pure, exactly one public method: value(): Promise<T>.
-- Actions (Manipulators) are side‑effecting, exactly one public method: perform(): Promise<void>. They never return values.
-- Compose behavior using objects (Sequence, When, Delay) and decorators (LoggedAction, SafeText). Do not add branching inside objects.
-- Strict TypeScript. No `any`. Prefer Query<T> and Playwright Locator. One class per file, named exports only.
-- Playwright: wrap selectors in a Locator builder that accepts { page?: Page } and throws if missing. Prefer Locator APIs over ElementHandle. Avoid waitForTimeout.
-- Tests: Unit with Vitest in tests/**; E2E with Playwright Test in tests-e2e/**. Start changes with tests. CI must be green.
+MANDATES
+- Builders (Queries): exactly one public method value(): Promise<T>, pure.
+- Actions (Manipulators): exactly one public method perform(): Promise<void>, side-effecting; never return values.
+- Favor composition (Sequence, When, Delay) and decorators (LoggedAction, SafeText). Avoid branching inside objects.
+- Use Playwright Locator abstractions; builders/actions accept Query<Locator> where the DOM is involved.
+- No `any` in source. Strict typing via Query<T> shapes.
 
-When proposing code:
-- Provide minimal diffs that preserve object composition.
-- Explain how the changes respect these rules.
+STYLE
+- No setters; avoid getters; immutable readonly fields preferred. No implementation inheritance; no static utils.
+- Class names do not end with “-er”. Variables are single nouns. Methods are single verbs. CQRS for builders/actions.
+- Constructors do assignments only. Keep objects small (<=4 fields). No null in args/returns. Avoid casts/reflection.
+- Paired Brackets allowed for deep compositions. Messages are single sentences without trailing periods.
+
+TESTS & CI
+- Tests-first: each bug/feature starts with a test. Unit tests (Vitest) in tests/**; E2E (Playwright Test) in tests-e2e/** only.
+- CI must pass before review; commit package-lock.json; use npm ci.
+
+OUTPUT
+- Propose minimal diffs that respect these constraints and briefly explain how they adhere to the rules.
