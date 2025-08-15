@@ -26,7 +26,7 @@ test.describe("connect if recent", () => {
       </body></html>
     `);
 
-    const recentPost = new FbLocator({ page }, "div.last-post time");
+    const recentPost = new FbLocator(page, "div.last-post time");
     const cond = new LessThan(
       new DaysBetween(new ParsedDatetime(new TextOf(recentPost)), new Now()),
       new NumberLiteral(30)
@@ -37,7 +37,7 @@ test.describe("connect if recent", () => {
 
     expect(await cond.value()).toBe(true);
 
-    await new When(cond, new Click(new FbLocator({ page }, "button.connect"))).perform();
+    await new When(cond, new Click(new FbLocator(page, "button.connect"))).perform();
 
     await expect(page.locator("body")).toHaveAttribute("data-connected", "1");
   });
@@ -58,13 +58,13 @@ test.describe("connect if recent", () => {
       </body></html>
     `);
 
-    const oldPost = new FbLocator({ page }, "div.last-post time");
+    const oldPost = new FbLocator(page, "div.last-post time");
     const cond = new LessThan(
       new DaysBetween(new ParsedDatetime(new TextOf(oldPost)), new Now()),
       new NumberLiteral(30)
     );
 
-    await new When(cond, new Click(new FbLocator({ page }, "button.connect"))).perform();
+    await new When(cond, new Click(new FbLocator(page, "button.connect"))).perform();
 
     await expect(page.locator("body")).not.toHaveAttribute("data-connected", /./);
   });

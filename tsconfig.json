@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["foxbot/**/*.ts", "script_connect_if_recent.ts", "tests/**/*.ts"]
+  "include": ["foxbot/**/*.ts", "examples/script_connect_if_recent/script_connect_if_recent.ts", "tests/**/*.ts"]
 }
