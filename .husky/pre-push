@@ -1,3 +1,2 @@
-# husky: pre-push
 npm run typecheck
 npm test

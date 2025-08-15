@@ -10,6 +10,9 @@ import prettier from "eslint-config-prettier";
  * - Prettier disables conflicting stylistic rules
  */
 export default [
+  {
+    ignores: ["dist/**", "node_modules/**", "playwright-report/**", "test-results/**"],
+  },
   js.configs.recommended,
   // TS presets (includes parser+plugin wired for flat config)
   ...tseslint.configs.recommended,

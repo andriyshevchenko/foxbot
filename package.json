@@ -1,7 +1,6 @@
 {
   "name": "foxbot",
   "version": "0.2.0",
-  "type": "commonjs",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
