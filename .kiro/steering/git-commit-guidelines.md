@@ -35,6 +35,7 @@ When helping with git commits, follow these best practices based on Conventional
 
 - Use imperative mood in description ("add" not "added" or "adds")
 - Keep description under 50 characters
+- Avoid duplicate information in description and body, keep it minimal
 - Don't capitalize the first letter of description
 - Don't end description with a period
 - Use body to explain what and why, not how
