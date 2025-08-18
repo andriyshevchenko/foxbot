@@ -30,10 +30,10 @@ describe("actions composition", () => {
   it("When executes inner action only if predicate is true", async () => {
     expect.assertions(1);
     const log: string[] = [];
-    const trueQuery: Query<boolean> = { value: async () => true };
-    const falseQuery: Query<boolean> = { value: async () => false };
-    await new When(trueQuery, new ProbeAction(log, "hit")).perform();
-    await new When(falseQuery, new ProbeAction(log, "miss")).perform();
+    const predicate: Query<boolean> = { value: async () => true };
+    const guard: Query<boolean> = { value: async () => false };
+    await new When(predicate, new ProbeAction(log, "hit")).perform();
+    await new When(guard, new ProbeAction(log, "miss")).perform();
     expect(log, "When did not execute actions based on predicate correctly").toEqual(["hit"]);
   });
 });

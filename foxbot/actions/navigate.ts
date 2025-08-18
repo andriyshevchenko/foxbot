@@ -1,4 +1,5 @@
 import type { Page } from "playwright";
+
 import { Action, Query } from "../core";
 
 /**

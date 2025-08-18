@@ -1,4 +1,5 @@
 import type { Locator as PwLocator, Page } from "playwright";
+
 import { Query } from "../core";
 
 /**
