@@ -99,21 +99,27 @@ Instructions:
    Verify reset worked: `git log --oneline -3` (should show commits before WIP commits)
 
 3. **Generate meaningful commit message**:
-   Based on the change analysis, create a commit message following conventional commit format:
+   Based on the change analysis, create a commit message following these rules:
+   1. Only generate the commit message; no explanations.
+   2. Commit message must be concise, clear, and meaningful.
+   3. Use the imperative mood (e.g., "Add", "Fix", "Refactor", "Update").
+   4. Follow Conventional Commits style:
+      feat: new feature
+      fix: bug fix
+      refactor: code restructuring
+      docs: documentation updates
+      test: add or modify tests
+      chore: other maintenance tasks
+   5. Limit the subject line to 50-72 characters.
+   6. Optional body may provide 1-2 lines of clarification, max 72 characters per line.
+   7. Do not generate vague words like "update", "change stuff", "fix things", "improve things".
 
-   **Format guidelines**:
-   - Use format: `<type>(<scope>): <description>`
-   - **Types**: feat, fix, docs, style, refactor, test, chore, build, ci, perf
-   - **Scope**: optional, indicates area of change (api, ui, core, etc.)
-   - **Description**: clear, concise summary of what was done
+   Input: <description of changes or diff summary>
 
-   **Examples based on change analysis**:
-   - If mostly new features: `feat(core): add new action builders and playwright integration`
-   - If mostly refactoring: `refactor: reorganize codebase structure and improve modularity`
-   - If mostly documentation: `docs: update README and add comprehensive API documentation`
-   - If mixed changes: `feat: enhance framework with new actions and improved documentation`
-   - If configuration heavy: `chore: update project configuration and build setup`
-   - If bug fixes dominate: `fix: resolve multiple issues in action handling and validation`
+   Output: only the commit message and optional body, formatted as:
+
+   <type>(<scope>): <subject>
+   <optional body>
 
 4. **Create single meaningful commit**:
    Command: `python .prompts/monitor_git_commit.py "<generated_commit_message>"`
