@@ -4,37 +4,83 @@ Instructions:
 
 1. **Pre-flight checks**:
    - Verify working directory is clean: `git status --porcelain`
-   - Verify required scripts exist: `if (Test-Path .prompts/analyze_wip_commits.py) { Write-Host "Analyzer found" } else { Write-Error "Missing analyzer script" }`
+   - Verify required scripts exist: `if (Test-Path .prompts/analyze_wip_c7. **Monitor script fails during breakdown**:
+   - Script fails while creating logical commits
+   - Solution: Use fallback `git commit -m "<message>"` and continue with remaining groups
+
+2. **Final verification fails**:
+   - Some files remain uncommitted after breakdown
+   - Solution: Use `git add .` and `git commit -m "chore: remaining changes"` for any missed files
+
+3. **Line ending warnings**:) { Write-Host "Analyzer found" } else { Write-Error "Missing analyzer script" }`
    - Verify monitor script exists: `if (Test-Path .prompts/monitor_git_commit.py) { Write-Host "Monitor found" } else { Write-Error "Missing monitor script" }`
 
-2. Run the WIP commits analyzer script:
+4. Run the WIP commits analyzer script:
    Command: `python .prompts/analyze_wip_commits.py`
    The script outputs the count of consecutive 'WIP awaiting rebase' commits.
    **Note the count value from the output for use in SQUASH step.**
 
-3. **Verify count accuracy**:
+5. **Verify count accuracy**:
    - Manually verify: `git log --oneline -<count>` (replace <count> with analyzer output)
    - Ensure the commits shown match expectation
    - If count seems wrong, stop and investigate
 
-4. **Verify git repository state**:
+6. **Verify git repository state**:
    - Confirm you're in correct repository: `git remote -v`
    - Verify current branch: `git branch --show-current`
 
-# SQUASH STEP
+# SQUASH AND BREAKDOWN STEP
 
 Instructions:
 
-1. Reset to before the WIP commits (stages all changes):
+1. **Create backup branch** (execute each block separately):
+
+   **Block 1 - Setup variables:**
+
+   ```powershell
+   $currentBranch = git branch --show-current
+   Write-Host "Current branch: $currentBranch"
+   $backupBranch = "backup-rewrite-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+   ```
+
+   **Block 2 - Check for existing branch:**
+
+   ```powershell
+   $existingBranch = git branch --list $backupBranch
+   if ($existingBranch) {
+       $backupBranch = "backup-rewrite-$(Get-Date -Format 'yyyyMMdd-HHmmss-fff')"
+       Write-Host "Branch existed, using: $backupBranch"
+   }
+   ```
+
+   **Block 3 - Create backup branch:**
+
+   ```powershell
+   git checkout -b $backupBranch
+   if ($LASTEXITCODE -ne 0) {
+       Write-Error "Failed to create backup branch. Aborting."
+       exit 1
+   }
+   Write-Host "Created backup branch: $backupBranch"
+   ```
+
+   **Block 4 - Return to original branch:**
+
+   ```powershell
+   git checkout $currentBranch
+   Write-Host "Switched back to: $currentBranch"
+   ```
+
+2. **Reset to before the WIP commits (stages all changes)**:
    Command: `git reset --soft HEAD~<count>` (replace <count> with analyzer output)
    Verify reset worked: `git log --oneline -3` (should show commits before WIP commits)
 
-2. Create a single commit with all the changes:
+3. **Create a single commit with all the changes**:
    Command: `python .prompts/monitor_git_commit.py "WIP: squashed"`
    **If this fails, run:** `git status` to check state, then use `git commit -m "WIP: squashed"` as fallback
    **Verify squash commit succeeded:** `git log --oneline -1` (should show "WIP: squashed")
 
-3. Create backup and prepare for breakdown (don't execute as single command block because it gets truncated):
+4. **Prepare for breakdown**:
 
    ```powershell
    $currentBranch = git branch --show-current
@@ -61,15 +107,22 @@ Instructions:
    Write-Host "Ready for breakdown - all changes are now unstaged (hard reset removed the squashed commit)"
    ```
 
-4. Break down changes into logical commits:
+5. **Prepare for breakdown**:
+   Command: `git reset HEAD~1`
+   Write-Host "Ready for breakdown - all changes are now unstaged (hard reset removed the squashed commit)"
+
+6. **Break down changes into logical commits**:
    - Verify current state: `git status` (should show unstaged changes, no staged changes)
    - Use `git diff --name-status` to see all unstaged changes
    - Analyze changes by logical groupings:
-     - Directory/file reorganization (moves, renames, deletions)
-     - Documentation updates (\*.md files, comments)
-     - New feature additions (new functionality files)
-     - Configuration changes (config files, settings)
-     - Script/tooling additions (automation, build scripts)
+     - **Directory/file reorganization**: moves, renames, deletions
+     - **Documentation updates**: \*.md files, comments, README changes
+     - **New feature additions**: new functionality files, API additions
+     - **Configuration changes**: config files, settings, package.json
+     - **Script/tooling additions**: automation, build scripts, test files
+     - **Bug fixes**: corrections, patches, error handling
+     - **Refactoring**: code improvements without feature changes
+     - **Dependencies**: package updates, library additions
    - Stage and commit each logical group:
      - Use `git add <specific-files>` for precise staging
      - Verify staged files: `git status --porcelain --cached`
@@ -81,34 +134,34 @@ Instructions:
        - `feat(scope): add new functionality Y`
        - `chore: add automation scripts for workflow Z`
 
-5. **Final verification**:
+7. **Final verification**:
    - Verify all changes committed: `git status` (should be clean)
    - Count logical commits created during breakdown (note this number)
    - Review commit history: `git log --oneline -<number_noted_above>`
    - If any files remain uncommitted, stage and commit them now
 
-6. **Optional cleanup** (recommended after confirming everything works):
+8. **Optional cleanup** (recommended after confirming everything works):
    - Delete backup branch when confident in results
    - Keep backup branch if you want to test commits first
    - **Commands**: See Variable Reference below
 
-7. **Recovery instructions** (if something goes wrong):
+9. **Recovery instructions** (if something goes wrong):
    - **Recover to backup state**: Use when you want to go back to the squashed commit
    - **Restart from backup**: Use when you want to try the breakdown again
    - **Abort entirely**: Use to discard all changes and return to original state
    - **Commands**: See Variable Reference below
 
-### Variable Reference (for Steps 6 & 7):
+### Variable Reference (for Steps 7 & 8):
 
 - **If PowerShell variables available:** Use `$currentBranch` and `$backupBranch`
-- **If variables lost:** Find backup with `git branch --list backup-squash-*`
+- **If variables lost:** Find backup with `git branch --list backup-rewrite-*`
 
-**Cleanup commands (Step 6):**
+**Cleanup commands (Step 7):**
 
 - With variables: `git branch -D $backupBranch`
-- Without variables: `git branch --list backup-squash-*` then `git branch -D <branch-name>`
+- Without variables: `git branch --list backup-rewrite-*` then `git branch -D <branch-name>`
 
-**Recovery commands (Step 7):**
+**Recovery commands (Step 8):**
 
 - **Recover to backup state:**
   - With variables: `git checkout $backupBranch`
@@ -121,7 +174,10 @@ Instructions:
 NOTES:
 
 - Never perform git reset unless explicitly asked to do so by the user.
+- This workflow breaks down large commits into multiple logical commits for better history.
+- The backup mechanism ensures safe recovery if needed.
 - This workflow is optimized for Windows PowerShell environments.
+- **IMPORTANT**: Execute PowerShell blocks separately to avoid truncation and duplicate commands.
 
 ## TROUBLESHOOTING
 
@@ -147,15 +203,19 @@ NOTES:
    - Branch creation or checkout errors
    - Solution: The script includes error handling and will abort safely, check error message and resolve manually
 
-6. **Monitor script fails during breakdown**:
+6. **PowerShell block truncation**:
+   - Large PowerShell blocks get cut off or execute duplicate commands
+   - Solution: Execute each numbered block separately, verify variables persist between blocks
+
+7. **Monitor script fails during breakdown**:
    - Script fails while creating logical commits
    - Solution: Use fallback `git commit -m "<message>"` and continue with remaining groups
 
-7. **Final verification fails**:
+8. **Final verification fails**:
    - Some files remain uncommitted after breakdown
    - Solution: Use `git add .` and `git commit -m "chore: remaining changes"` for any missed files
 
-8. **Line ending warnings**:
+9. **Line ending warnings**:
    - Windows may show CRLF/LF conversion warnings
    - These are normal and don't affect the squash process
 
@@ -166,3 +226,4 @@ NOTES:
 - Verify each commit with meaningful messages before proceeding
 - Keep recovery instructions handy in case of failures
 - Consider keeping backup branches until you're confident in the results
+- Use conventional commit format for better project history
