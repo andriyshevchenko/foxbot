@@ -45,9 +45,8 @@ def monitor_git_commit(commit_message="WIP: awaiting rebase"):
                 "insertions(+)" in output or "deletions(-)" in output or
                 "create mode" in output or "delete mode" in output):
                 completion_message_found = True
-                print("⏳ Waiting 5 seconds for clarity...")
-                time.sleep(5)
-                print("\n🎉 GIT COMMIT COMPLETED!")
+                print("⏳ Waiting...")
+                time.sleep(2.5)
                 print("✅ File change summary detected")
                 print("🚀 Safe to proceed to next steps")
         else:
@@ -76,8 +75,8 @@ def main():
     success = monitor_git_commit(commit_message)
     
     if success:
-        print("\n🎯 Git commit monitoring completed successfully!")
-        print("� Commit has finished executing.")
+        print("\n🎉 GIT COMMIT COMPLETED!")
+        print("✨ Commit has finished executing.")
         print("✨ You can now safely proceed with your next steps.")
     else:
         print("\n💥 Git commit monitoring detected an error.")
