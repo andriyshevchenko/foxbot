@@ -83,6 +83,16 @@
 - **[M4-H]** Each module must have a single responsibility.
 - **[M5-M]** Barrel exports (`index.ts`) should be used sparingly.
 - **[M6-H]** Circular dependencies are strictly prohibited.
+- **[M7-H]** Separate type imports from value imports using `import type`.
+- **[M8-H]** Never mix types and values in the same import statement.
+- **[M9-M]** Use consistent import paths within a project; prefer barrel exports or direct imports consistently.
+- **[M10-H]** Import aliases must be used consistently across the entire codebase.
+- **[M11-M]** Barrel exports must not re-export from unrelated modules.
+- **[M12-H]** Each barrel export must represent a cohesive module boundary.
+- **[M13-M]** Import statements must be sorted alphabetically within each group.
+- **[M14-H]** Relative imports must use the shortest possible path.
+- **[M15-M]** External library imports must come before any internal imports.
+- **[M16-H]** Type-only imports must be grouped separately from value imports.
 
 ## Documentation [D]
 
@@ -135,6 +145,9 @@
 - **[TS38-L]** Test names must spell "cannot" and "dont" without apostrophes.
 - **[TS39-H]** Use `expect.assertions()` to verify expected number of assertions.
 - **[TS40-H]** Async tests must use `async/await` syntax, not Promise chains.
+- **[TS41-H]** Test imports must follow the same grouping and sorting rules as production code.
+- **[TS42-M]** Test files must use barrel exports consistently when importing from modules.
+- **[TS43-H]** Test doubles must be defined as classes, not inline objects or functions.
 
 ## TypeScript-Specific Rules [TSS]
 
