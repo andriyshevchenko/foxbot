@@ -1,2 +1,1 @@
-Check whether codebase contains any deprecated components/approaches and fix them.
-The project must be up-to-date with the latest best practices. Use context7 for this part.
+Upgrade this typescript project as per 2025, clean up deprecated practices and components

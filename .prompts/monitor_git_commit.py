@@ -46,12 +46,13 @@ def monitor_git_commit(commit_message="WIP: awaiting rebase"):
                 "create mode" in output or "delete mode" in output):
                 completion_message_found = True
                 print("⏳ Waiting...")
-                time.sleep(2.5)
+                time.sleep(1)
                 print("✅ File change summary detected")
                 print("🚀 Safe to proceed to next steps")
         else:
             # Small delay to prevent excessive CPU usage
-            time.sleep(1)
+            print("⏳ Waiting...")
+            time.sleep(5)
     
     # Wait for process to complete
     process.wait()
