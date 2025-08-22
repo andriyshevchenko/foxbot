@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
@@ -17,5 +17,5 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["foxbot/**/*.ts", "examples/script_connect_if_recent/script_connect_if_recent.ts", "tests/**/*.ts"]
+  "include": ["foxbot/**/*.ts", "reachly/**/*.ts", "examples/**/*.ts", "tests/**/*.ts"]
 }

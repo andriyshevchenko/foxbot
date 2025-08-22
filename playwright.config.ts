@@ -10,7 +10,6 @@ export default defineConfig({
   reporter: [["list"], ["html", { outputFolder: "playwright-report", open: "never" }]],
   /* Shared settings for all tests */
   use: {
-    headless: true,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
     video: "retain-on-failure",

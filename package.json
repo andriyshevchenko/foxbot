@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "start": "tsx script_connect_if_recent.ts",
     "start:built": "node dist/script_connect_if_recent.js",
-    "prepare": "husky install",
+    "prepare": "husky",
     "postinstall": "playwright install chromium",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -21,24 +21,22 @@
     "pw:report": "playwright show-report"
   },
   "dependencies": {
-    "playwright": "^1.45.0"
+    "playwright": "^1.55.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
-    "@playwright/test": "^1.45.0",
-    "@types/node": "^20.12.12",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
-    "@vitest/coverage-v8": "^2.0.5",
-    "eslint": "^9.32.0",
-    "eslint-config-prettier": "^9.1.2",
+    "@eslint/js": "^9.33.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.5",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.38.0",
-    "vitest": "^2.0.5"
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0",
+    "vitest": "^3.2.4"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

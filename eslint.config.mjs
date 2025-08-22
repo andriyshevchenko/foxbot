@@ -9,7 +9,7 @@ import prettier from "eslint-config-prettier";
  * - TypeScript recommended rules (via typescript-eslint v8)
  * - Prettier disables conflicting stylistic rules
  */
-export default [
+export default tseslint.config(
   {
     ignores: ["dist/**", "node_modules/**", "playwright-report/**", "test-results/**"],
   },
@@ -25,4 +25,4 @@ export default [
   },
   // Turn off stylistic rules conflicting with Prettier
   prettier,
-];
+);
