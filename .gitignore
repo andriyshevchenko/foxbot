@@ -6,9 +6,7 @@
 .pnp.js
 
 # Testing
-/coverage
-/playwright-report
-/test-results
+/output
 
 # Production
 /build

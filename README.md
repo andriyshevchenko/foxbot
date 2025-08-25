@@ -76,6 +76,48 @@ await new When(
 
 ---
 
+## 🧪 Development
+
+### Testing & Coverage
+
+```bash
+# Run unit tests
+npm test
+
+# Run unit tests with coverage
+npm run test:coverage
+
+# Run e2e tests
+npm run test:e2e:vitest
+
+# Run e2e tests with coverage
+npm run test:e2e:coverage
+
+# Run all tests
+npm run test:all
+
+# Run all tests with combined coverage (unit + e2e)
+npm run test:all:coverage
+
+# CI pipeline (typecheck + lint + combined coverage)
+npm run ci
+```
+
+**Coverage Thresholds:**
+
+- Statements: 90%
+- Branches: 90%
+- Functions: 90%
+- Lines: 90%
+
+View detailed coverage reports:
+
+- Unit tests: `output/coverage/index.html`
+- E2E tests: `output/coverage-e2e/index.html`
+- Combined (unit + e2e): `output/coverage-combined/index.html`
+
+---
+
 ## 📏 Design Rules
 
 - Queries: pure, no side effects, expose `.value()`

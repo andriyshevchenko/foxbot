@@ -13,7 +13,7 @@ export abstract class SessionDecorator implements Session {
     return this.session.browser();
   }
 
-  [Symbol.asyncDispose](): Promise<void> {
-    return Promise.resolve(this.session[Symbol.asyncDispose]());
+  close(): Promise<void> {
+    return this.session.close();
   }
 }

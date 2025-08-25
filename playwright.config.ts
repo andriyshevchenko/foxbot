@@ -1,13 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "tests-e2e",
+  testDir: "tests/e2e",
+  /* Output directory for test results */
+  outputDir: "output/test-results",
   /* Fail-fast retries on CI */
   retries: process.env.CI ? 2 : 0,
   /* Opt into parallelism */
   fullyParallel: true,
   /* Reporter */
-  reporter: [["list"], ["html", { outputFolder: "playwright-report", open: "never" }]],
+  reporter: [["list"], ["html", { outputFolder: "output/playwright-report", open: "never" }]],
   /* Shared settings for all tests */
   use: {
     screenshot: "only-on-failure",

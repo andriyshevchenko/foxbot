@@ -1,0 +1,12 @@
+export { addBoundingRectJitter } from "./bounding-rect-jitter";
+export { removeCdcProperties } from "./cdc-removal";
+export { spoofChromeRuntime } from "./chrome-runtime";
+export { spoofDeviceProperties } from "./device-properties";
+export { humanizeFetchTiming } from "./fetch-timing";
+export { trackMouseMovements } from "./mouse-tracking";
+export { spoofNavigatorLanguages } from "./navigator-languages";
+export { spoofNavigatorPlugins } from "./navigator-plugins";
+export { spoofPermissionsApi } from "./permissions-api";
+export { spoofScreenProperties } from "./screen-properties";
+export { removeWebDriverProperty } from "./webdriver-removal";
+export { spoofWebGLContext } from "./webgl-context";
