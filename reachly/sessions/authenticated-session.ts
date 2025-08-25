@@ -1,6 +1,6 @@
 import type { Session } from "../../foxbot/playwright/session";
 import { SessionDecorator } from "./session-decorator";
-import { SessionData } from "./session-data";
+import { Host } from "./host";
 
 /**
  * Decorator to add authentication cookies to a session.
@@ -8,7 +8,7 @@ import { SessionData } from "./session-data";
 export class AuthenticatedSession extends SessionDecorator {
   constructor(
     session: Session,
-    private readonly sessionData: SessionData
+    private readonly host: Host
   ) {
     super(session);
   }
@@ -23,37 +23,6 @@ export class AuthenticatedSession extends SessionDecorator {
    */
   private async addCookiesToContext(): Promise<void> {
     const context = await this.browser();
-    const sessionData = this.sessionData;
-    const sameSiteNone = "None" as const;
-    const sameSiteLax = "Lax" as const;
-    const linkedinCookies = [
-      {
-        name: "li_at",
-        value: sessionData.li_at,
-        domain: ".linkedin.com",
-        path: "/",
-        httpOnly: true,
-        secure: true,
-        sameSite: sameSiteNone,
-      },
-      {
-        name: "JSESSIONID",
-        value: sessionData.JSESSIONID,
-        domain: ".linkedin.com",
-        path: "/",
-        httpOnly: true,
-        secure: true,
-        sameSite: sameSiteNone,
-      },
-    ];
-    const additionalCookies = Object.entries(sessionData.cookies || {}).map(([name, value]) => ({
-      name,
-      value,
-      domain: ".linkedin.com",
-      path: "/",
-      secure: true,
-      sameSite: sameSiteLax,
-    }));
-    await context.addCookies([...linkedinCookies, ...additionalCookies]);
+    await context.addCookies(JSON.parse(await this.host.cookies()));
   }
 }

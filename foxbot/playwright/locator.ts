@@ -1,4 +1,4 @@
-import type { Locator as PwLocator, Page } from "playwright";
+import type { Page, Locator as PwLocator } from "playwright";
 
 import { Query } from "../core";
 
@@ -7,6 +7,7 @@ import { Query } from "../core";
  *
  * @example
  * ```typescript
+ * const page = new SessionPage(session);
  * const locator = new Locator(page, "#submit-button");
  * const element = await locator.value();
  * await element.click();
@@ -16,11 +17,11 @@ export class Locator implements Query<PwLocator> {
   /**
    * Creates a new Locator instance.
    *
-   * @param page The Playwright Page to search within
+   * @param page Query that returns the Playwright Page to search within
    * @param selector The CSS selector to locate elements
    */
   constructor(
-    private readonly page: Page,
+    private readonly page: Query<Page>,
     private readonly selector: string
   ) {}
 
@@ -30,6 +31,6 @@ export class Locator implements Query<PwLocator> {
    * @returns Promise that resolves to the Playwright Locator
    */
   async value(): Promise<PwLocator> {
-    return this.page.locator(this.selector);
+    return (await this.page.value()).locator(this.selector);
   }
 }

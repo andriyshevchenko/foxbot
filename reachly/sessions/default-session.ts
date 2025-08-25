@@ -1,8 +1,10 @@
 import type { Browser, BrowserContext } from "playwright";
 
-import type { Session } from "../../foxbot/playwright/session";
 import { Query } from "../../foxbot/core/query";
-import { SessionData } from "./session-data";
+import type { Session } from "../../foxbot/playwright/session";
+import { Host } from "./host";
+import { Location } from "./location";
+import { Viewport } from "./viewport";
 
 /**
  * Default LinkedIn Playwright session.
@@ -13,7 +15,9 @@ export class DefaultSession implements Session {
   private initialized = false;
 
   constructor(
-    private readonly sessionData: SessionData,
+    private readonly viewport: Viewport,
+    private readonly host: Host,
+    private readonly location: Location,
     private readonly browser_instance: Query<Browser>
   ) {}
 
@@ -21,11 +25,10 @@ export class DefaultSession implements Session {
    * Opens a new Chromium browser session with LinkedIn-specific configuration.
    */
   async open(): Promise<void> {
-    const sessionData = this.sessionData;
     const defaultHttpHeaders = {
       Accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-      "Accept-Language": sessionData.locale + ",en;q=0.9",
+      "Accept-Language": (await this.host.locale()) + ",en;q=0.9",
       "Accept-Encoding": "gzip, deflate, br",
       DNT: "1",
       Connection: "keep-alive",
@@ -35,27 +38,27 @@ export class DefaultSession implements Session {
       "Sec-Fetch-Site": "none",
       "Sec-Fetch-User": "?1",
     } as const;
-    const httpHeaders = sessionData.httpHeaders
-      ? { ...defaultHttpHeaders, ...sessionData.httpHeaders }
+    const httpHeaders = (await this.host.headers())
+      ? { ...defaultHttpHeaders, ...(await this.host.headers()) }
       : defaultHttpHeaders;
     const browser = await this.browser_instance.value();
     this.contextInstance = await browser.newContext({
-      userAgent: sessionData.userAgent,
+      userAgent: await this.host.userAgent(),
       viewport: {
-        width: sessionData.viewportWidth,
-        height: sessionData.viewportHeight,
+        width: await this.viewport.width(),
+        height: await this.viewport.height(),
       },
       screen: {
-        width: sessionData.screenWidth || sessionData.viewportWidth,
-        height: sessionData.screenHeight || sessionData.viewportHeight,
+        width: await this.viewport.screenWidth(),
+        height: await this.viewport.screenHeight(),
       },
-      deviceScaleFactor: sessionData.devicePixelRatio || 1,
-      timezoneId: sessionData.timezone,
-      locale: sessionData.locale,
+      deviceScaleFactor: (await this.viewport.devicePixelRatio()) || 1,
+      timezoneId: await this.host.timezone(),
+      locale: await this.host.locale(),
       permissions: ["geolocation"] as const,
       geolocation: {
-        latitude: sessionData.latitude || 40.7128,
-        longitude: sessionData.longitude || -74.006,
+        latitude: (await this.location.latitude()) || 40.7128,
+        longitude: (await this.location.longitude()) || -74.006,
       },
       extraHTTPHeaders: httpHeaders,
     });
@@ -75,7 +78,7 @@ export class DefaultSession implements Session {
   /**
    * Cleans up browser resources by closing context.
    */
-  async [Symbol.asyncDispose](): Promise<void> {
+  async close(): Promise<void> {
     if (this.initialized && this.contextInstance) {
       await this.contextInstance.close();
     }
