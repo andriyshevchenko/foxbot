@@ -108,8 +108,10 @@ describe.skip("LinkedIn Login E2E Test", () => {
         new OpenSession(session),
         new LinkedInLogin(session),
         new Lambda(async () => {
-          const context = await session.browser();
-          expect(context, "LinkedIn session failed to create browser context").toBeDefined();
+          expect(
+            await session.browser(),
+            "LinkedIn session failed to create browser context"
+          ).toBeDefined();
         }),
       ])
     ).perform();
