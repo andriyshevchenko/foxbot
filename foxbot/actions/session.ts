@@ -29,31 +29,3 @@ export class OpenSession implements Action {
     await this.session.open();
   }
 }
-
-/**
- * Action primitive that closes a browser session.
- * Calls the close() method on the provided session to clean up browser resources.
- *
- * @example
- * ```typescript
- * const closeAction = new CloseSession(session);
- * await closeAction.perform(); // session is now closed
- * ```
- */
-export class CloseSession implements Action {
-  /**
-   * Creates a new close session action.
-   *
-   * @param session Session to close
-   */
-  constructor(private readonly session: Session) {}
-
-  /**
-   * Closes the browser session.
-   *
-   * @returns Promise that resolves when session is closed
-   */
-  async perform(): Promise<void> {
-    await this.session.close();
-  }
-}

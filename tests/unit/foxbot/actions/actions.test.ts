@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { CloseSession, Fork, NoOp, OpenSession, Sequence, When } from "../../../../foxbot/actions";
+import { Fork, NoOp, OpenSession, Sequence, When } from "../../../../foxbot/actions";
 import type { Action, Query } from "../../../../foxbot/core";
 import { BooleanLiteral } from "../../../../foxbot/core";
 
@@ -170,15 +170,12 @@ describe("actions", () => {
   });
 
   describe("Session actions", () => {
-    it("OpenSession opens session and CloseSession closes session", async () => {
-      expect.assertions(2);
+    it("OpenSession opens session", async () => {
+      expect.assertions(1);
       const session = new FakeSession();
       const openAction = new OpenSession(session);
-      const closeAction = new CloseSession(session);
       await openAction.perform();
       expect(session.isOpen, "Session was not opened").toBe(true);
-      await closeAction.perform();
-      expect(session.isOpen, "Session was not closed").toBe(false);
     });
   });
 });

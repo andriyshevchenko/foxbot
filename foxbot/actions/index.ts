@@ -7,4 +7,5 @@ export * from "./navigate";
 export * from "./no-op";
 export * from "./sequence";
 export * from "./session";
+export * from "./session-guard";
 export * from "./when";

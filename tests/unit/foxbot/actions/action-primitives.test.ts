@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { CloseSession, Fork, NoOp, OpenSession, Sequence } from "../../../../foxbot/actions";
+import { Fork, NoOp, Sequence } from "../../../../foxbot/actions";
 import type { Action } from "../../../../foxbot/core";
 import { BooleanLiteral } from "../../../../foxbot/core";
-
-import { FakeSession } from "../../../fakes/fake-session";
 
 describe("Action primitives", () => {
   it("should execute sequence actions in order", async () => {
@@ -65,18 +63,5 @@ describe("Action primitives", () => {
 
     expect(thenExecuted).toBe(false);
     expect(elseExecuted).toBe(true);
-  });
-
-  it("should open and close sessions", async () => {
-    const session = new FakeSession();
-
-    const openAction = new OpenSession(session);
-    const closeAction = new CloseSession(session);
-
-    await openAction.perform();
-    expect(session.isOpen).toBe(true);
-
-    await closeAction.perform();
-    expect(session.isOpen).toBe(false);
   });
 });
