@@ -24,5 +24,5 @@ export default tseslint.config(
     },
   },
   // Turn off stylistic rules conflicting with Prettier
-  prettier,
+  prettier
 );
