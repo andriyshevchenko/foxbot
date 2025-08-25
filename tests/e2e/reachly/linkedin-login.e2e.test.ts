@@ -15,6 +15,7 @@ import {
   StealthSession,
 } from "../../../reachly/sessions";
 import { LinkedInLogin } from "../../../reachly/workflows/linkedin-login";
+import { OpenSession, Sequence, SessionGuard, Lambda } from "../../../foxbot/actions";
 
 /**
  * LinkedIn session decorator that composes stealth, optimization, and authentication capabilities.
@@ -102,13 +103,19 @@ describe.skip("LinkedIn Login E2E Test", () => {
     const browserQuery = new Chromium(new Headless(), new StealthArgs());
     const session = new LinkedInSession(sessionData, browserQuery);
 
-    try {
-      await session.open();
-      const context = await session.browser();
-      expect(context, "LinkedIn session failed to create browser context").toBeDefined();
-    } finally {
-      await session.close();
-    }
+    await new SessionGuard(
+      new Sequence([
+        new OpenSession(session),
+        new LinkedInLogin(session),
+        new Lambda(async () => {
+          expect(
+            await session.browser(),
+            "LinkedIn session failed to create browser context"
+          ).toBeDefined();
+        }),
+      ]),
+      session
+    ).perform();
   }, 30000);
 
   it("performs complete LinkedIn login workflow", async () => {
@@ -118,12 +125,15 @@ describe.skip("LinkedIn Login E2E Test", () => {
     const browserQuery = new Chromium(new Headless(), new StealthArgs());
     const session = new LinkedInSession(sessionData, browserQuery);
 
-    try {
-      const login = new LinkedInLogin(session);
-      await login.perform();
-      expect(true, "LinkedIn login workflow did not complete successfully").toBe(true);
-    } finally {
-      await session.close();
-    }
+    await new SessionGuard(
+      new Sequence([
+        new OpenSession(session),
+        new LinkedInLogin(session),
+        new Lambda(async () => {
+          expect(true, "LinkedIn login workflow did not complete successfully").toBe(true);
+        }),
+      ]),
+      session
+    ).perform();
   }, 60000);
 });
