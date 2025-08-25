@@ -113,7 +113,8 @@ describe.skip("LinkedIn Login E2E Test", () => {
             "LinkedIn session failed to create browser context"
           ).toBeDefined();
         }),
-      ])
+      ]),
+      session
     ).perform();
   }, 30000);
 
@@ -131,7 +132,8 @@ describe.skip("LinkedIn Login E2E Test", () => {
         new Lambda(async () => {
           expect(true, "LinkedIn login workflow did not complete successfully").toBe(true);
         }),
-      ])
+      ]),
+      session
     ).perform();
   }, 60000);
 });
