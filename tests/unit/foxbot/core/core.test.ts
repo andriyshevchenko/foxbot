@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { NumberLiteral } from "../foxbot/core/number";
-import { BooleanLiteral } from "../foxbot/core/boolean";
+import { describe, expect, it } from "vitest";
+
+import { BooleanLiteral, NumberLiteral } from "../../../../foxbot/core";
 
 describe("core literals", () => {
   it("NumberLiteral returns its number", async () => {
