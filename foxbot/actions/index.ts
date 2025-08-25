@@ -4,6 +4,7 @@ export * from "./delay";
 export * from "./fill";
 export * from "./fork";
 export * from "./navigate";
+export * from "./lambda";
 export * from "./no-op";
 export * from "./sequence";
 export * from "./session";

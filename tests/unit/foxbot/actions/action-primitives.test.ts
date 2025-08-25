@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Fork, NoOp, Sequence } from "../../../../foxbot/actions";
+import { Fork, Lambda, NoOp, Sequence } from "../../../../foxbot/actions";
 import type { Action } from "../../../../foxbot/core";
 import { BooleanLiteral } from "../../../../foxbot/core";
 
@@ -26,6 +26,17 @@ describe("Action primitives", () => {
   it("should handle no-op actions", async () => {
     const noOp = new NoOp();
     await noOp.perform(); // Should not throw
+  });
+
+  it("should execute lambda action", async () => {
+    let executed = false;
+    const lambda = new Lambda(async () => {
+      executed = true;
+    });
+
+    await lambda.perform();
+
+    expect(executed).toBe(true);
   });
 
   it("should execute fork actions based on condition", async () => {
