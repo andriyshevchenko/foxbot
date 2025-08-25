@@ -106,6 +106,7 @@ describe.skip("LinkedIn Login E2E Test", () => {
     await new SessionGuard(
       new Sequence([
         new OpenSession(session),
+        new LinkedInLogin(session),
         new Lambda(async () => {
           const context = await session.browser();
           expect(context, "LinkedIn session failed to create browser context").toBeDefined();
@@ -124,9 +125,8 @@ describe.skip("LinkedIn Login E2E Test", () => {
     await new SessionGuard(
       new Sequence([
         new OpenSession(session),
+        new LinkedInLogin(session),
         new Lambda(async () => {
-          const login = new LinkedInLogin(session);
-          await login.perform();
           expect(true, "LinkedIn login workflow did not complete successfully").toBe(true);
         }),
       ])
