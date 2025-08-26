@@ -23,7 +23,7 @@ export class FakeSession implements Session {
     this.isOpen = true;
   }
 
-  async browser(): Promise<BrowserContext> {
+  async host(): Promise<BrowserContext> {
     return this.fakeBrowserContext as unknown as BrowserContext;
   }
 

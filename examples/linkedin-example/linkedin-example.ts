@@ -1,6 +1,7 @@
 import type { Browser } from "playwright";
 import { TextLiteral } from "../../foxbot/builders";
 import { Query } from "../../foxbot/core";
+import { OpenSession } from "../../foxbot/actions";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -79,7 +80,7 @@ async function main(): Promise<void> {
     const session = createLinkedInSession(json, browserQuery);
 
     // Use the session
-    await session.open();
+    await new OpenSession(session).perform();
     console.log("✅ LinkedIn session created and opened");
 
     // The session now has all the capabilities:
@@ -89,8 +90,8 @@ async function main(): Promise<void> {
     // - StealthSession: Anti-detection
 
     // You can now use the session for LinkedIn automation
-    // Example: Get browser context and create pages
-    const context = await session.browser();
+    // Example: Get host context and create pages
+    const context = await session.host();
     const page = await context.newPage();
 
     console.log("📱 Created page with full session capabilities");

@@ -53,7 +53,7 @@ class LinkedInSession extends SessionDecorator {
   }
 
   async open(): Promise<void> {
-    await this.session.open();
+    // Session is assumed to be already open
   }
 }
 
@@ -109,8 +109,8 @@ describe.skip("LinkedIn Login E2E Test", () => {
         new LinkedInLogin(session),
         new Lambda(async () => {
           expect(
-            await session.browser(),
-            "LinkedIn session failed to create browser context"
+            await session.host(),
+            "LinkedIn session failed to create host context"
           ).toBeDefined();
         }),
       ]),

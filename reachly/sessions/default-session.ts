@@ -16,7 +16,7 @@ export class DefaultSession implements Session {
 
   constructor(
     private readonly viewport: Viewport,
-    private readonly host: Host,
+    private readonly hostConfig: Host,
     private readonly location: Location,
     private readonly browser_instance: Query<Browser>
   ) {}
@@ -28,7 +28,7 @@ export class DefaultSession implements Session {
     const defaultHttpHeaders = {
       Accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-      "Accept-Language": (await this.host.locale()) + ",en;q=0.9",
+      "Accept-Language": (await this.hostConfig.locale()) + ",en;q=0.9",
       "Accept-Encoding": "gzip, deflate, br",
       DNT: "1",
       Connection: "keep-alive",
@@ -38,12 +38,12 @@ export class DefaultSession implements Session {
       "Sec-Fetch-Site": "none",
       "Sec-Fetch-User": "?1",
     } as const;
-    const httpHeaders = (await this.host.headers())
-      ? { ...defaultHttpHeaders, ...(await this.host.headers()) }
+    const httpHeaders = (await this.hostConfig.headers())
+      ? { ...defaultHttpHeaders, ...(await this.hostConfig.headers()) }
       : defaultHttpHeaders;
     const browser = await this.browser_instance.value();
     this.contextInstance = await browser.newContext({
-      userAgent: await this.host.userAgent(),
+      userAgent: await this.hostConfig.userAgent(),
       viewport: {
         width: await this.viewport.width(),
         height: await this.viewport.height(),
@@ -53,8 +53,8 @@ export class DefaultSession implements Session {
         height: await this.viewport.screenHeight(),
       },
       deviceScaleFactor: (await this.viewport.devicePixelRatio()) || 1,
-      timezoneId: await this.host.timezone(),
-      locale: await this.host.locale(),
+      timezoneId: await this.hostConfig.timezone(),
+      locale: await this.hostConfig.locale(),
       permissions: ["geolocation"] as const,
       geolocation: {
         latitude: (await this.location.latitude()) || 40.7128,
@@ -68,7 +68,7 @@ export class DefaultSession implements Session {
   /**
    * Returns the browser context instance.
    */
-  async browser(): Promise<BrowserContext> {
+  async host(): Promise<BrowserContext> {
     if (!this.initialized || !this.contextInstance) {
       throw new Error("Session is not open and context is unavailable - call open() method first");
     }

@@ -11,7 +11,6 @@ export class OptimizedSession extends SessionDecorator {
   }
 
   async open(): Promise<void> {
-    await this.session.open();
     await this.setupResourceBlocking();
   }
 
@@ -19,7 +18,7 @@ export class OptimizedSession extends SessionDecorator {
    * Sets up resource blocking to reduce memory usage and improve stealth.
    */
   private async setupResourceBlocking(): Promise<void> {
-    const context = await this.browser();
+    const context = await this.host();
     await context.route("**/*", async (route: Route) => {
       const resourceType = route.request().resourceType();
       const url = route.request().url();

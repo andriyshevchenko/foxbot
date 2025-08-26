@@ -8,7 +8,7 @@ import { JsonViewport } from "../../../../reachly/sessions/viewport";
 import { FakeBrowser, TestSessionData } from "./index";
 
 describe("DefaultSession", () => {
-  it("throws error when browser method called before open", async () => {
+  it("throws error when host method called before open", async () => {
     expect.assertions(1);
     const testData = new TestSessionData(new Map());
     const browserQuery = new FakeBrowser();
@@ -18,7 +18,7 @@ describe("DefaultSession", () => {
       new JsonLocation(testData),
       browserQuery
     );
-    await expect(session.browser()).rejects.toThrow(
+    await expect(session.host()).rejects.toThrow(
       "Session is not open and context is unavailable - call open() method first"
     );
   });
@@ -34,7 +34,7 @@ describe("DefaultSession", () => {
       browserQuery
     );
     await session.open();
-    const context = await session.browser();
+    const context = await session.host();
     await session.close();
     expect(
       context,
@@ -42,7 +42,7 @@ describe("DefaultSession", () => {
     ).toBeDefined();
   }, 10000);
 
-  it("returns browser context after opening session", async () => {
+  it("returns host context after opening session", async () => {
     expect.assertions(1);
     const testData = new TestSessionData(new Map());
     const browserQuery = new FakeBrowser();
@@ -53,9 +53,9 @@ describe("DefaultSession", () => {
       browserQuery
     );
     await session.open();
-    const context = await session.browser();
+    const context = await session.host();
     await session.close();
-    expect(context.pages, "DefaultSession did not return valid browser context").toBeDefined();
+    expect(context.pages, "DefaultSession did not return valid host context").toBeDefined();
   }, 10000);
 
   it("creates context with unicode user agent", async () => {
@@ -69,7 +69,7 @@ describe("DefaultSession", () => {
       browserQuery
     );
     await session.open();
-    const context = await session.browser();
+    const context = await session.host();
     await session.close();
     expect(context, "DefaultSession did not create context with unicode user agent").toBeDefined();
   }, 10000);
@@ -90,7 +90,7 @@ describe("DefaultSession", () => {
       browserQuery
     );
     await session.open();
-    const context = await session.browser();
+    const context = await session.host();
     const page = await context.newPage();
     const viewport = page.viewportSize();
     await page.close();
@@ -117,7 +117,7 @@ describe("DefaultSession", () => {
       browserQuery
     );
     await session.open();
-    const context = await session.browser();
+    const context = await session.host();
     await session.close();
     expect(
       context,

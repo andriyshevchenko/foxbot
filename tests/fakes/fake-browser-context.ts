@@ -11,6 +11,10 @@ export class FakeBrowserContext {
     return Promise.resolve(this.fakePage);
   }
 
+  pages(): FakePage[] {
+    return [this.fakePage];
+  }
+
   async close(): Promise<void> {
     // No-op for test
   }
