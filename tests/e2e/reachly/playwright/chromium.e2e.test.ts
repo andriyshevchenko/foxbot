@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Chromium } from "../../../../reachly/playwright/chromium";
+import { Chromium } from "../../../../reachly/browser/chromium";
 
 import { FakeArgs, FakeHeadless } from "../../../fakes/fake-playwright-queries";
 

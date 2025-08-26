@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TextLiteral } from "../../../../foxbot/builders";
+import { TextLiteral } from "../../../../foxbot/value";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -11,7 +11,7 @@ import {
   JsonViewport,
   OptimizedSession,
   StealthSession,
-} from "../../../../reachly/sessions";
+} from "../../../../reachly/session";
 
 import { FakeBrowser } from "./index";
 

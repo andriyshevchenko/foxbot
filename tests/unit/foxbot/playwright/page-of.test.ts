@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PageOf } from "../../../../foxbot/playwright/page_of";
+import { PageOf } from "../../../../foxbot/page/page_of";
 
 // Note: This test is designed to test PageOf construction and interface compliance
 // without requiring complex browser mocking that would violate TypeScript strict rules.

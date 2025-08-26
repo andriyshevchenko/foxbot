@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Headless } from "../../../../reachly/playwright/headless";
+import { Headless } from "../../../../reachly/browser/headless";
 
 describe("Headless", () => {
   it("returns true when HEADLESS environment variable is true", async () => {

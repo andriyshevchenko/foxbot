@@ -1,4 +1,4 @@
-import type { Session } from "../../foxbot/playwright/session";
+import type { Session } from "../../foxbot/session";
 import { SessionDecorator } from "./session-decorator";
 import { Host } from "./host";
 

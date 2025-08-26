@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Fork, Lambda, NoOp, Sequence } from "../../../../foxbot/actions";
+import { Fork, Lambda, NoOp, Sequence } from "../../../../foxbot/control";
 import type { Action } from "../../../../foxbot/core";
 import { BooleanLiteral } from "../../../../foxbot/core";
 

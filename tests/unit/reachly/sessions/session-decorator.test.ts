@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { SessionDecorator } from "../../../../reachly/sessions/session-decorator";
+import { SessionDecorator } from "../../../../reachly/session/session-decorator";
 
 import { FakeIntegrationSession } from "./index";
 

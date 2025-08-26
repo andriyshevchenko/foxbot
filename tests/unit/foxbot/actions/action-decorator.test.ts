@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ActionDecorator } from "../../../../foxbot/actions";
+import { ActionDecorator } from "../../../../foxbot/control";
 import type { Action } from "../../../../foxbot/core";
 
 /**

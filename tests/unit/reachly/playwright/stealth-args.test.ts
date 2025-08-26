@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { StealthArgs } from "../../../../reachly/playwright/stealth-args";
+import { StealthArgs } from "../../../../reachly/browser/stealth-args";
 
 describe("StealthArgs", () => {
   it("returns default chrome arguments as comma separated string", async () => {

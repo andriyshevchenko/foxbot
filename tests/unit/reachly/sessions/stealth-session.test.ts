@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { Query } from "../../../../foxbot/core/query";
-import { JsonDevice } from "../../../../reachly/sessions/device";
-import { JsonGraphics } from "../../../../reachly/sessions/graphics";
-import { JsonHost } from "../../../../reachly/sessions/host";
-import { JsonLocation } from "../../../../reachly/sessions/location";
-import { StealthSession } from "../../../../reachly/sessions/stealth-session";
-import { JsonViewport } from "../../../../reachly/sessions/viewport";
+import { JsonDevice } from "../../../../reachly/session/device";
+import { JsonGraphics } from "../../../../reachly/session/graphics";
+import { JsonHost } from "../../../../reachly/session/host";
+import { JsonLocation } from "../../../../reachly/session/location";
+import { StealthSession } from "../../../../reachly/session/stealth-session";
+import { JsonViewport } from "../../../../reachly/session/viewport";
 
 import { FakeIntegrationSession, TestSessionData } from "./index";
 

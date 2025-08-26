@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { OptimizedSession } from "../../../../reachly/sessions/optimized-session";
+import { OptimizedSession } from "../../../../reachly/session/optimized-session";
 
 import { FakeIntegrationSession } from "./index";
 

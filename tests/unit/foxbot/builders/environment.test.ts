@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Environment } from "../../../../foxbot/builders/environment";
+import { Environment } from "../../../../foxbot/value/environment";
 
 describe("Environment", () => {
   it("returns environment variable value when defined", async () => {

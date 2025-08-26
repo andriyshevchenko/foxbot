@@ -1,5 +1,5 @@
 import type { Action } from "../core/action";
-import type { Session } from "../playwright/session";
+import type { Session } from "./session";
 
 /**
  * Action primitive that opens a browser session.

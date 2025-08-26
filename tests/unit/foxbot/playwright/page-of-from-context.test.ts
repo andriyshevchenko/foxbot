@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PageOf } from "../../../../foxbot/playwright/page_of";
+import { PageOf } from "../../../../foxbot/page/page_of";
 import { FakeCoreSession } from "../../../fakes/fake-core-session";
 
 describe("PageOf", () => {
