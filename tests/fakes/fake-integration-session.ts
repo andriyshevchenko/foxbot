@@ -10,7 +10,7 @@ import type { Session } from "../../foxbot/playwright/session";
  * ```typescript
  * const session = new FakeIntegrationSession();
  * await session.open();
- * const context = await session.browser();
+ * const context = await session.host();
  * ```
  */
 export class FakeIntegrationSession implements Session {
@@ -33,7 +33,7 @@ export class FakeIntegrationSession implements Session {
    * @returns Promise resolving to BrowserContext
    * @throws Error if session is not open
    */
-  async browser(): Promise<BrowserContext> {
+  async host(): Promise<BrowserContext> {
     if (!this.contextInstance) {
       throw new Error("Session not open");
     }

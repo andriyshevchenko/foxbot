@@ -7,7 +7,7 @@ import { Action, Query } from "../core";
  *
  * @example
  * ```typescript
- * const page = new SessionPage(session);
+ * const page = new PageOf(session);
  * const url = new TextLiteral("https://example.com");
  * const navigate = new Navigate(page, url);
  * await navigate.perform();

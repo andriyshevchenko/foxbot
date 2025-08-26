@@ -18,7 +18,6 @@ class TestSessionDecorator extends SessionDecorator {
   private opened = false;
 
   async open(): Promise<void> {
-    await this.session.open();
     this.opened = true;
   }
 
@@ -28,17 +27,14 @@ class TestSessionDecorator extends SessionDecorator {
 }
 
 describe("SessionDecorator", () => {
-  it("delegates browser call to wrapped session", async () => {
+  it("delegates host call to wrapped session", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
     await fakeSession.open();
     const decorator = new TestSessionDecorator(fakeSession);
-    const context = await decorator.browser();
+    const context = await decorator.host();
     await decorator.close();
-    expect(
-      context,
-      "SessionDecorator did not delegate browser call to wrapped session"
-    ).toBeDefined();
+    expect(context, "SessionDecorator did not delegate host call to wrapped session").toBeDefined();
   });
 
   it("delegates disposal to wrapped session", async () => {
@@ -53,19 +49,24 @@ describe("SessionDecorator", () => {
     ).toBe(true);
   });
 
-  it("calls wrapped session open method", async () => {
+  it("performs decorator open logic without reopening session", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
+    await fakeSession.open();
     const decorator = new TestSessionDecorator(fakeSession);
     await decorator.open();
-    const context = await decorator.browser();
+    const context = await decorator.host();
     await decorator.close();
-    expect(context, "SessionDecorator did not call wrapped session open method").toBeDefined();
+    expect(
+      context,
+      "SessionDecorator did not perform open logic without reopening session"
+    ).toBeDefined();
   });
 
   it("maintains decorator state independently of wrapped session", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
+    await fakeSession.open();
     const decorator = new TestSessionDecorator(fakeSession);
     await decorator.open();
     await decorator.close();

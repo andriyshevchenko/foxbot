@@ -33,7 +33,7 @@ export class StealthSession extends SessionDecorator {
     session: Session,
     private readonly viewport: Viewport,
     private readonly graphics: Graphics,
-    private readonly host: Host,
+    private readonly hostConfig: Host,
     private readonly device: Device,
     private readonly location: Location
   ) {
@@ -41,7 +41,6 @@ export class StealthSession extends SessionDecorator {
   }
 
   async open(): Promise<void> {
-    await this.session.open();
     await this.injectStealthScripts();
   }
 
@@ -49,11 +48,11 @@ export class StealthSession extends SessionDecorator {
    * Injects stealth scripts to mask automation indicators and mimic human behavior.
    */
   private async injectStealthScripts(): Promise<void> {
-    const context = await this.browser();
+    const context = await this.host();
     const sessionData = {
       viewport: this.viewport,
       graphics: this.graphics,
-      host: this.host,
+      host: this.hostConfig,
       device: this.device,
       location: this.location,
     };

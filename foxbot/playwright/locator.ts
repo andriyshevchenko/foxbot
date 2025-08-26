@@ -7,7 +7,7 @@ import { Query } from "../core";
  *
  * @example
  * ```typescript
- * const page = new SessionPage(session);
+ * const page = new PageOf(session);
  * const locator = new Locator(page, "#submit-button");
  * const element = await locator.value();
  * await element.click();

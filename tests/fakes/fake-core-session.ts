@@ -26,10 +26,11 @@ export class FakeCoreSession implements Session {
    *
    * @returns Promise resolving to fake BrowserContext
    */
-  async browser(): Promise<BrowserContext> {
+  async host(): Promise<BrowserContext> {
     return {
       newPage: async () => ({}) as Page,
-    } as BrowserContext;
+      pages: () => [{} as Page],
+    } as unknown as BrowserContext;
   }
 
   /**

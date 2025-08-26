@@ -9,8 +9,8 @@ export abstract class SessionDecorator implements Session {
 
   abstract open(): Promise<void>;
 
-  browser(): Promise<BrowserContext> {
-    return this.session.browser();
+  host(): Promise<BrowserContext> {
+    return this.session.host();
   }
 
   close(): Promise<void> {

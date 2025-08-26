@@ -4,10 +4,9 @@ import {
   Environment,
   NumberLiteral,
   RandomDelay,
-  SessionPage,
   TextLiteral,
 } from "../../foxbot/builders";
-import { Locator } from "../../foxbot/playwright";
+import { Locator, PageOf } from "../../foxbot/playwright";
 import type { Session } from "../../foxbot/playwright/session";
 
 /**
@@ -33,7 +32,7 @@ export class LinkedInLogin extends ActionDecorator {
    * @param session The browser session to use for login
    */
   constructor(session: Session) {
-    const page = new SessionPage(session);
+    const page = new PageOf(session);
     const username = new Base64(new Environment("LINKEDIN_USERNAME"));
     const password = new Base64(new Environment("LINKEDIN_PASSWORD"));
     const humanDelay = new RandomDelay(

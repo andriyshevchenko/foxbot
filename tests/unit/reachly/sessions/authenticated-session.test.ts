@@ -6,15 +6,16 @@ import { JsonHost } from "../../../../reachly/sessions/host";
 import { AuthenticatedTestSessionData, FakeIntegrationSession } from "./index";
 
 describe("AuthenticatedSession", () => {
-  it("adds LinkedIn cookies to browser context", async () => {
+  it("adds LinkedIn cookies to host context", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
+    await fakeSession.open();
     await authenticatedSession.open();
-    const context = await authenticatedSession.browser();
+    const context = await authenticatedSession.host();
     const cookies = await context.cookies();
     await authenticatedSession.close();
     const hasLinkedInCookies = cookies.some(
@@ -22,7 +23,7 @@ describe("AuthenticatedSession", () => {
     );
     expect(
       hasLinkedInCookies,
-      "AuthenticatedSession did not add LinkedIn cookies to browser context"
+      "AuthenticatedSession did not add LinkedIn cookies to host context"
     ).toBe(true);
   });
 
@@ -33,8 +34,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
+    await fakeSession.open();
     await authenticatedSession.open();
-    const context = await authenticatedSession.browser();
+    const context = await authenticatedSession.host();
     const cookies = await context.cookies();
     await authenticatedSession.close();
     const hasAdditionalCookies = cookies.some((cookie) => cookie.name === "追加_cookie");
@@ -52,8 +54,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
+    await fakeSession.open();
     await authenticatedSession.open();
-    const context = await authenticatedSession.browser();
+    const context = await authenticatedSession.host();
     const cookies = await context.cookies();
     await authenticatedSession.close();
     const linkedInCookie = cookies.find((cookie) => cookie.name === "li_at");
@@ -71,8 +74,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
+    await fakeSession.open();
     await authenticatedSession.open();
-    const context = await authenticatedSession.browser();
+    const context = await authenticatedSession.host();
     const cookies = await context.cookies();
     await authenticatedSession.close();
     const jsessionCookie = cookies.find((cookie) => cookie.name === "JSESSIONID");
@@ -90,8 +94,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
+    await fakeSession.open();
     await authenticatedSession.open();
-    const context = await authenticatedSession.browser();
+    const context = await authenticatedSession.host();
     await authenticatedSession.close();
     expect(
       context,

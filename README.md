@@ -57,13 +57,13 @@ await new When(
 
 ## 📁 Project Structure
 
-| Folder                 | Contents                                                    |
-| ---------------------- | ----------------------------------------------------------- |
-| `core/`                | Interfaces: `Query<T>`, `Action`                            |
-| `builders/`            | Queries like `TextOf`, `DaysBetween`, `Presence`, etc.      |
-| `actions/`             | Actions like `Click`, `Fill`, `Sequence`, `When`, etc.      |
-| `playwright/`          | Thin adapters: `Locator`                                    |
-| `tests/`, `tests-e2e/` | Unit and integration tests using Vitest and Playwright Test |
+| Folder                 | Contents                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `core/`                | Interfaces: `Query<T>`, `Action`                                                   |
+| `builders/`            | Queries like `Base64`, `RandomDelay`, `Contains`, etc.                             |
+| `actions/`             | Actions like `Click`, `Fill`, `Sequence`, `When`, etc.                             |
+| `playwright/`          | Playwright adapters: `Locator`, `PageOf`, `TextOf`, `Presence`, `LocationOf`, etc. |
+| `tests/`, `tests-e2e/` | Unit and integration tests using Vitest and Playwright Test                        |
 
 ---
 

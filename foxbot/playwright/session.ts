@@ -15,7 +15,7 @@ export interface Session {
    * Returns the Playwright browser context instance.
    * @throws Error if session is not open
    */
-  browser(): Promise<BrowserContext>;
+  host(): Promise<BrowserContext>;
 
   /**
    * Closes the browser session and cleans up resources.

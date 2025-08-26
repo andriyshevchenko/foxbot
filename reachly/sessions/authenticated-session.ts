@@ -8,13 +8,12 @@ import { Host } from "./host";
 export class AuthenticatedSession extends SessionDecorator {
   constructor(
     session: Session,
-    private readonly host: Host
+    private readonly hostConfig: Host
   ) {
     super(session);
   }
 
   async open(): Promise<void> {
-    await this.session.open();
     await this.addCookiesToContext();
   }
 
@@ -22,7 +21,7 @@ export class AuthenticatedSession extends SessionDecorator {
    * Adds LinkedIn cookies and additional cookies to the browser context.
    */
   private async addCookiesToContext(): Promise<void> {
-    const context = await this.browser();
-    await context.addCookies(JSON.parse(await this.host.cookies()));
+    const context = await this.host();
+    await context.addCookies(JSON.parse(await this.hostConfig.cookies()));
   }
 }
