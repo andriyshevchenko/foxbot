@@ -1,7 +1,7 @@
 import type { Browser } from "playwright";
 import { TextLiteral } from "../../foxbot/value";
 import { Query } from "../../foxbot/core";
-import { OpenSession } from "../../foxbot/session";
+import { OpenSession, OptimizedSession } from "../../foxbot/session";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -10,7 +10,6 @@ import {
   JsonHost,
   JsonLocation,
   JsonViewport,
-  OptimizedSession,
   StealthSession,
 } from "../../reachly/session";
 

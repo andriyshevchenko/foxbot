@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 import type { Browser } from "playwright";
 
-import { Query } from "../../foxbot/core";
+import { Query } from "../core";
 
 export class Chromium implements Query<Browser> {
   constructor(

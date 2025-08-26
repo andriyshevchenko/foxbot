@@ -1,5 +1,5 @@
 import type { Route } from "playwright";
-import type { Session } from "../../foxbot/session";
+import type { Session } from "./session";
 import { SessionDecorator } from "./session-decorator";
 
 /**

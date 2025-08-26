@@ -1,5 +1,5 @@
 import type { BrowserContext } from "playwright";
-import type { Session } from "../../foxbot/session";
+import type { Session } from "./session";
 
 /**
  * Abstract decorator for sessions to extend session functionality.

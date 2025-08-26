@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { TextLiteral } from "../../../../foxbot/value";
+import { OptimizedSession } from "../../../../foxbot/session";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -9,7 +10,6 @@ import {
   JsonHost,
   JsonLocation,
   JsonViewport,
-  OptimizedSession,
   StealthSession,
 } from "../../../../reachly/session";
 
