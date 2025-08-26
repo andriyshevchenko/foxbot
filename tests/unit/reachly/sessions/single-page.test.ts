@@ -12,7 +12,7 @@ describe("SinglePage", () => {
     const singlePageSession = new SinglePage(fakeSession);
     await singlePageSession.open();
     const context = await singlePageSession.host();
-    await singlePageSession.close();
     expect(context.pages().length, "SinglePage did not create a page in host context").toBe(1);
+    await singlePageSession.close();
   });
 });
