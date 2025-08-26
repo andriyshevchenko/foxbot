@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { JsonLocation } from "../../../../reachly/sessions/location";
-import { TextLiteral } from "../../../../foxbot/builders";
+import { JsonLocation } from "../../../../reachly/session/location";
+import { TextLiteral } from "../../../../foxbot/value";
 
 /**
  * Tests for JsonLocation extracting geolocation coordinates.

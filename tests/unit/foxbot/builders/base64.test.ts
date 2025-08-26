@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Base64 } from "../../../../foxbot/builders/base64";
-import { TextLiteral } from "../../../../foxbot/builders/text_literal";
+import { Base64 } from "../../../../foxbot/value/base64";
+import { TextLiteral } from "../../../../foxbot/value/text_literal";
 
 describe("Base64", () => {
   it("decodes valid base64 string correctly", async () => {

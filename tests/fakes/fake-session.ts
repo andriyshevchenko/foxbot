@@ -1,6 +1,6 @@
 import type { BrowserContext } from "playwright";
 import type { Query } from "../../foxbot/core/query";
-import type { Session } from "../../foxbot/playwright/session";
+import type { Session } from "../../foxbot/session";
 import { FakeBrowserContext } from "./fake-browser-context";
 import { FakePage } from "./fake-page";
 

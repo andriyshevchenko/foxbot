@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Contains, TextLiteral } from "../../../../foxbot/builders";
+import { Contains, TextLiteral } from "../../../../foxbot/value";
 
 describe("Contains", () => {
   it("returns true when haystack contains needle", async () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SessionGuard } from "../../../../foxbot/actions";
+import { SessionGuard } from "../../../../foxbot/session";
 import type { Action } from "../../../../foxbot/core";
 import { FakeSession } from "../../../fakes/fake-session";
 

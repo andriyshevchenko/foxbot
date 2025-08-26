@@ -1,10 +1,10 @@
 import type { BrowserContext } from "playwright";
-import type { Session } from "../../foxbot/playwright/session";
+import type { Session } from "../../foxbot/session";
 import type { Device } from "./device";
 import type { Graphics } from "./graphics";
 import type { Host } from "./host";
 import type { Location } from "./location";
-import { SessionDecorator } from "./session-decorator";
+import { SessionDecorator } from "../../foxbot/session";
 import {
   addBoundingRectJitter,
   humanizeFetchTiming,

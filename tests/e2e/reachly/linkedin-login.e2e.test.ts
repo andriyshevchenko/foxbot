@@ -1,7 +1,8 @@
 import type { Browser } from "playwright";
 import { describe, expect, it } from "vitest";
 import type { Query } from "../../../foxbot/core";
-import { Chromium, Headless, StealthArgs } from "../../../reachly/playwright";
+import { Headless, StealthArgs } from "../../../reachly/browser";
+import { Chromium } from "../../../foxbot/browser";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -10,12 +11,16 @@ import {
   JsonHost,
   JsonLocation,
   JsonViewport,
-  OptimizedSession,
-  SessionDecorator,
   StealthSession,
-} from "../../../reachly/sessions";
-import { LinkedInLogin } from "../../../reachly/workflows/linkedin-login";
-import { OpenSession, Sequence, SessionGuard, Lambda } from "../../../foxbot/actions";
+} from "../../../reachly/session";
+import { LinkedInLogin } from "../../../reachly/linkedin";
+import {
+  OpenSession,
+  SessionGuard,
+  SessionDecorator,
+  OptimizedSession,
+} from "../../../foxbot/session";
+import { Sequence, Lambda } from "../../../foxbot/control";
 
 /**
  * LinkedIn session decorator that composes stealth, optimization, and authentication capabilities.

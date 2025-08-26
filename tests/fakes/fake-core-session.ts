@@ -1,5 +1,5 @@
 import type { BrowserContext, Page } from "playwright";
-import type { Session } from "../../foxbot/playwright/session";
+import type { Session } from "../../foxbot/session";
 
 /**
  * Fake session implementation for foxbot core testing purposes.

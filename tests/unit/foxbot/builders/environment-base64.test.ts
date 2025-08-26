@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EnvironmentBase64 } from "../../../../foxbot/builders/environment_base64";
+import { EnvironmentBase64 } from "../../../../foxbot/value/environment_base64";
 
 describe("EnvironmentBase64", () => {
   it("returns decoded value when environment variable contains valid base64", async () => {

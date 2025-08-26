@@ -1,7 +1,7 @@
 import type { Browser, BrowserContext } from "playwright";
 
 import { Query } from "../../foxbot/core/query";
-import type { Session } from "../../foxbot/playwright/session";
+import type { Session } from "../../foxbot/session";
 import { Host } from "./host";
 import { Location } from "./location";
 import { Viewport } from "./viewport";

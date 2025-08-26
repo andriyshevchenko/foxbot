@@ -4,8 +4,6 @@ export * from "./graphics";
 export * from "./viewport";
 export * from "./location";
 export * from "./default-session";
-export * from "./session-decorator";
 export * from "./authenticated-session";
-export * from "./optimized-session";
 export * from "./stealth-session";
 export * from "./single-page";

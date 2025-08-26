@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { JsonDevice } from "../../../../reachly/sessions/device";
-import { TextLiteral } from "../../../../foxbot/builders";
+import { JsonDevice } from "../../../../reachly/session/device";
+import { TextLiteral } from "../../../../foxbot/value";
 
 /**
  * Tests for JsonDevice extracting device characteristics.

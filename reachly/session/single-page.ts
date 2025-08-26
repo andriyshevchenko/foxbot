@@ -1,5 +1,5 @@
-import type { Session } from "../../foxbot/playwright/session";
-import { SessionDecorator } from "./session-decorator";
+import type { Session } from "../../foxbot/session";
+import { SessionDecorator } from "../../foxbot/session";
 
 /**
  * Decorator that creates a single Playwright page in the browser context.

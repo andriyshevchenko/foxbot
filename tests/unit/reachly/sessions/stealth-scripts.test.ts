@@ -12,7 +12,7 @@ import {
   spoofScreenProperties,
   spoofWebGLContext,
   trackMouseMovements,
-} from "../../../../reachly/sessions/stealth-scripts";
+} from "../../../../reachly/session/stealth-scripts";
 
 describe("Stealth Scripts", () => {
   describe("removeWebDriverProperty", () => {

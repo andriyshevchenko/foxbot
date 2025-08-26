@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { NumberLiteral } from "../../../../foxbot/builders/number_literal";
-import { RandomDelay } from "../../../../foxbot/builders/random_delay";
+import { NumberLiteral } from "../../../../foxbot/value/number_literal";
+import { RandomDelay } from "../../../../foxbot/value/random_delay";
 
 describe("RandomDelay", () => {
   it("generates delay within specified bounds", async () => {

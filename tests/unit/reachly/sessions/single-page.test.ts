@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { SinglePage } from "../../../../reachly/sessions/single-page";
+import { SinglePage } from "../../../../reachly/session/single-page";
 
 import { FakeIntegrationSession } from "./index";
 

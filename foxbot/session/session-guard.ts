@@ -1,5 +1,5 @@
 import type { Action } from "../core/action";
-import type { Session } from "../playwright/session";
+import type { Session } from "./session";
 
 /**
  * Wraps an action and ensures the session is closed after the action runs.
