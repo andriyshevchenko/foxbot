@@ -17,9 +17,9 @@ import { FakeIntegrationSession, TestSessionData } from "./index";
  * @param q Query providing session data
  * @returns StealthSession configured with fake session and test data
  */
-async function stealthSessionFrom(q: Query<string>): Promise<StealthSession> {
+function stealthSessionFrom(q: Query<string>): StealthSession {
   const session = new FakeIntegrationSession();
-  await session.open();
+  void session.open();
   return new StealthSession(
     session,
     new JsonViewport(q),
@@ -33,7 +33,7 @@ async function stealthSessionFrom(q: Query<string>): Promise<StealthSession> {
 describe("StealthSession", () => {
   it("injects stealth scripts after opening session", async () => {
     expect.assertions(1);
-    const stealthSession = await stealthSessionFrom(new TestSessionData(new Map()));
+    const stealthSession = stealthSessionFrom(new TestSessionData(new Map()));
     await stealthSession.open();
     const context = await stealthSession.host();
     await stealthSession.close();
@@ -45,7 +45,7 @@ describe("StealthSession", () => {
 
   it("handles session data with unicode locale", async () => {
     expect.assertions(1);
-    const stealthSession = await stealthSessionFrom(
+    const stealthSession = stealthSessionFrom(
       new TestSessionData(new Map([["locale", "繁體中文-TW"]]))
     );
     await stealthSession.open();
@@ -56,7 +56,7 @@ describe("StealthSession", () => {
 
   it("handles session data with unicode platform", async () => {
     expect.assertions(1);
-    const stealthSession = await stealthSessionFrom(
+    const stealthSession = stealthSessionFrom(
       new TestSessionData(new Map([["platform", "Linux_测试平台"]]))
     );
     await stealthSession.open();
@@ -70,7 +70,7 @@ describe("StealthSession", () => {
 
   it("handles minimal session data without optional properties", async () => {
     expect.assertions(1);
-    const stealthSession = await stealthSessionFrom(
+    const stealthSession = stealthSessionFrom(
       new TestSessionData(
         new Map([
           ["li_at", "minimal_li_at"],
@@ -94,7 +94,7 @@ describe("StealthSession", () => {
 
   it("opens session without throwing errors", async () => {
     expect.assertions(1);
-    const stealthSession = await stealthSessionFrom(new TestSessionData(new Map()));
+    const stealthSession = stealthSessionFrom(new TestSessionData(new Map()));
     await expect(stealthSession.open()).resolves.not.toThrow();
   });
 });
