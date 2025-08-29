@@ -28,11 +28,12 @@ export class SessionGuard implements Action {
    * @returns Promise that resolves when the action has run and the session is closed
    */
   async perform(): Promise<void> {
+    // Acquire context first so we don't attempt to create it in an error state inside finally.
+    const context = await this.session.profile();
     try {
       await this.target.perform();
     } finally {
-      const profile = await this.session.profile();
-      await profile.close();
+      await context.close();
     }
   }
 }
