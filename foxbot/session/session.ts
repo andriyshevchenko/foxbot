@@ -3,6 +3,12 @@ import type { BrowserContext } from "playwright";
 /**
  * Interface for managing a Playwright browser session lifecycle.
  * Provides explicit lifecycle management with open and close methods.
+ *
+ * @example
+ * ```typescript
+ * const session: Session = new DefaultSession(...);
+ * const context = await session.profile();
+ * ```
  */
 export interface Session {
   /**

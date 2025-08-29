@@ -17,7 +17,5 @@ export class NoOp implements Action {
    *
    * @returns Promise that resolves immediately
    */
-  async perform(): Promise<void> {
-    // Intentionally does nothing
-  }
+  async perform(): Promise<void> {}
 }
