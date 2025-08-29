@@ -27,7 +27,7 @@ export class PageOf implements Query<Page> {
    * @throws Error if the context has no pages
    */
   async value(): Promise<Page> {
-    const context = await this.session.host();
+    const context = await this.session.profile();
     const page = context.pages()[0];
     if (!page) {
       throw new Error("No pages are available in the browser context");

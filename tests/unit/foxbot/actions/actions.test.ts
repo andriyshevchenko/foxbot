@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { Fork, NoOp, Sequence, When } from "../../../../foxbot/control";
-import { OpenSession } from "../../../../foxbot/session";
 import type { Action, Query } from "../../../../foxbot/core";
 import { BooleanLiteral } from "../../../../foxbot/core";
 
-import { FakeSession } from "../../../fakes/fake-session";
+// Removed FakeSession usage after OpenSession removal
 
 /**
  * Test action implementation that logs messages for verification.
@@ -170,13 +169,5 @@ describe("actions", () => {
     });
   });
 
-  describe("Session actions", () => {
-    it("OpenSession opens session", async () => {
-      expect.assertions(1);
-      const session = new FakeSession();
-      const openAction = new OpenSession(session);
-      await openAction.perform();
-      expect(session.isOpen, "Session was not opened").toBe(true);
-    });
-  });
+  // OpenSession removed from public API; session lifecycle derived via profile()
 });

@@ -13,11 +13,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
-    await fakeSession.open();
-    await authenticatedSession.open();
-    const context = await authenticatedSession.host();
+    const context = await authenticatedSession.profile();
     const cookies = await context.cookies();
-    await authenticatedSession.close();
+    await context.close();
     const hasLinkedInCookies = cookies.some(
       (cookie) => cookie.name === "li_at" || cookie.name === "JSESSIONID"
     );
@@ -34,11 +32,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
-    await fakeSession.open();
-    await authenticatedSession.open();
-    const context = await authenticatedSession.host();
+    const context = await authenticatedSession.profile();
     const cookies = await context.cookies();
-    await authenticatedSession.close();
+    await context.close();
     const hasAdditionalCookies = cookies.some((cookie) => cookie.name === "追加_cookie");
     expect(
       hasAdditionalCookies,
@@ -54,11 +50,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
-    await fakeSession.open();
-    await authenticatedSession.open();
-    const context = await authenticatedSession.host();
+    const context = await authenticatedSession.profile();
     const cookies = await context.cookies();
-    await authenticatedSession.close();
+    await context.close();
     const linkedInCookie = cookies.find((cookie) => cookie.name === "li_at");
     expect(
       linkedInCookie?.secure,
@@ -74,11 +68,9 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
-    await fakeSession.open();
-    await authenticatedSession.open();
-    const context = await authenticatedSession.host();
+    const context = await authenticatedSession.profile();
     const cookies = await context.cookies();
-    await authenticatedSession.close();
+    await context.close();
     const jsessionCookie = cookies.find((cookie) => cookie.name === "JSESSIONID");
     expect(
       jsessionCookie?.httpOnly,
@@ -94,10 +86,8 @@ describe("AuthenticatedSession", () => {
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
     );
-    await fakeSession.open();
-    await authenticatedSession.open();
-    const context = await authenticatedSession.host();
-    await authenticatedSession.close();
+    const context = await authenticatedSession.profile();
+    await context.close();
     expect(
       context,
       "AuthenticatedSession did not handle session data without additional cookies"

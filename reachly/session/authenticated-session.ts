@@ -1,27 +1,19 @@
+import { BrowserContext } from "playwright";
 import type { Session } from "../../foxbot/session";
-import { SessionDecorator } from "../../foxbot/session";
 import { Host } from "./host";
 
 /**
  * Decorator to add authentication cookies to a session.
  */
-export class AuthenticatedSession extends SessionDecorator {
+export class AuthenticatedSession implements Session {
   constructor(
-    session: Session,
+    private readonly session: Session,
     private readonly hostConfig: Host
-  ) {
-    super(session);
-  }
+  ) {}
 
-  async open(): Promise<void> {
-    await this.addCookiesToContext();
-  }
-
-  /**
-   * Adds LinkedIn cookies and additional cookies to the browser context.
-   */
-  private async addCookiesToContext(): Promise<void> {
-    const context = await this.host();
+  async profile(): Promise<BrowserContext> {
+    const context = await this.session.profile();
     await context.addCookies(JSON.parse(await this.hostConfig.cookies()));
+    return context;
   }
 }

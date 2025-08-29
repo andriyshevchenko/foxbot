@@ -8,11 +8,8 @@ describe("SinglePage", () => {
   it("creates a page in host context", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
     const singlePageSession = new SinglePage(fakeSession);
-    await singlePageSession.open();
-    const context = await singlePageSession.host();
+    const context = await singlePageSession.profile();
     expect(context.pages().length, "SinglePage did not create a page in host context").toBe(1);
-    await singlePageSession.close();
   });
 });

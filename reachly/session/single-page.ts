@@ -1,16 +1,15 @@
+import { BrowserContext } from "playwright";
 import type { Session } from "../../foxbot/session";
-import { SessionDecorator } from "../../foxbot/session";
 
 /**
  * Decorator that creates a single Playwright page in the browser context.
  */
-export class SinglePage extends SessionDecorator {
-  constructor(session: Session) {
-    super(session);
-  }
+export class SinglePage implements Session {
+  constructor(private readonly session: Session) {}
 
-  async open(): Promise<void> {
-    const context = await this.host();
+  async profile(): Promise<BrowserContext> {
+    const context = await this.session.profile();
     await context.newPage();
+    return context;
   }
 }

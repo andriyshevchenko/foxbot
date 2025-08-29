@@ -19,7 +19,6 @@ import { FakeIntegrationSession, TestSessionData } from "./index";
  */
 async function stealthSessionFrom(q: Query<string>): Promise<StealthSession> {
   const session = new FakeIntegrationSession();
-  await session.open();
   return new StealthSession(
     session,
     new JsonViewport(q),
@@ -31,15 +30,13 @@ async function stealthSessionFrom(q: Query<string>): Promise<StealthSession> {
 }
 
 describe("StealthSession", () => {
-  it("injects stealth scripts after opening session", async () => {
+  it("injects stealth scripts when profiling session", async () => {
     expect.assertions(1);
     const stealthSession = await stealthSessionFrom(new TestSessionData(new Map()));
-    await stealthSession.open();
-    const context = await stealthSession.host();
-    await stealthSession.close();
+    const context = await stealthSession.profile();
     expect(
       context,
-      "StealthSession did not inject stealth scripts after opening session"
+      "StealthSession did not inject stealth scripts when profiling session"
     ).toBeDefined();
   });
 
@@ -48,9 +45,7 @@ describe("StealthSession", () => {
     const stealthSession = await stealthSessionFrom(
       new TestSessionData(new Map([["locale", "繁體中文-TW"]]))
     );
-    await stealthSession.open();
-    const context = await stealthSession.host();
-    await stealthSession.close();
+    const context = await stealthSession.profile();
     expect(context, "StealthSession did not handle session data with unicode locale").toBeDefined();
   });
 
@@ -59,9 +54,7 @@ describe("StealthSession", () => {
     const stealthSession = await stealthSessionFrom(
       new TestSessionData(new Map([["platform", "Linux_测试平台"]]))
     );
-    await stealthSession.open();
-    const context = await stealthSession.host();
-    await stealthSession.close();
+    const context = await stealthSession.profile();
     expect(
       context,
       "StealthSession did not handle session data with unicode platform"
@@ -83,9 +76,7 @@ describe("StealthSession", () => {
         ])
       )
     );
-    await stealthSession.open();
-    const context = await stealthSession.host();
-    await stealthSession.close();
+    const context = await stealthSession.profile();
     expect(
       context,
       "StealthSession did not handle minimal session data without optional properties"
@@ -95,6 +86,6 @@ describe("StealthSession", () => {
   it("opens session without throwing errors", async () => {
     expect.assertions(1);
     const stealthSession = await stealthSessionFrom(new TestSessionData(new Map()));
-    await expect(stealthSession.open()).resolves.not.toThrow();
+    await expect(stealthSession.profile()).resolves.toBeDefined();
   });
 });

@@ -1,7 +1,7 @@
 import type { Browser } from "playwright";
-import { TextLiteral } from "../../foxbot/value";
 import { Query } from "../../foxbot/core";
-import { OpenSession, OptimizedSession } from "../../foxbot/session";
+import { OptimizedSession } from "../../foxbot/session";
+import { TextLiteral } from "../../foxbot/value";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -79,8 +79,8 @@ async function main(): Promise<void> {
     const session = createLinkedInSession(json, browserQuery);
 
     // Use the session
-    await new OpenSession(session).perform();
-    console.log("✅ LinkedIn session created and opened");
+    await session.profile();
+    console.log("✅ LinkedIn session profile created");
 
     // The session now has all the capabilities:
     // - DefaultSession: Basic browser setup
@@ -90,14 +90,15 @@ async function main(): Promise<void> {
 
     // You can now use the session for LinkedIn automation
     // Example: Get host context and create pages
-    const context = await session.host();
+    const context = await session.profile();
     const page = await context.newPage();
 
     console.log("📱 Created page with full session capabilities");
 
     // Clean up
     await page.close();
-    await session.close();
+    const ctx2 = await session.profile();
+    await ctx2.close();
     console.log("🧹 Session cleaned up");
   } catch (error) {
     console.error("❌ Error:", error);

@@ -1,91 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
-import { SessionDecorator } from "../../../../foxbot/session";
-
-import { FakeIntegrationSession } from "./index";
-
-/**
- * Test implementation of SessionDecorator for testing abstract functionality.
- * Provides a concrete implementation to test decorator behavior.
- *
- * @example
- * ```typescript
- * const decorator = new TestSessionDecorator(session);
- * await decorator.open();
- * ```
- */
-class TestSessionDecorator extends SessionDecorator {
-  private opened = false;
-
-  async open(): Promise<void> {
-    this.opened = true;
-  }
-
-  isOpened(): boolean {
-    return this.opened;
-  }
-}
-
-describe("SessionDecorator", () => {
-  it("delegates host call to wrapped session", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
-    const decorator = new TestSessionDecorator(fakeSession);
-    const context = await decorator.host();
-    await decorator.close();
-    expect(context, "SessionDecorator did not delegate host call to wrapped session").toBeDefined();
-  });
-
-  it("delegates disposal to wrapped session", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
-    const decorator = new TestSessionDecorator(fakeSession);
-    await decorator.close();
-    expect(
-      fakeSession.isDisposed(),
-      "SessionDecorator did not delegate disposal to wrapped session"
-    ).toBe(true);
-  });
-
-  it("performs decorator open logic without reopening session", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
-    const decorator = new TestSessionDecorator(fakeSession);
-    await decorator.open();
-    const context = await decorator.host();
-    await decorator.close();
-    expect(
-      context,
-      "SessionDecorator did not perform open logic without reopening session"
-    ).toBeDefined();
-  });
-
-  it("maintains decorator state independently of wrapped session", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
-    const decorator = new TestSessionDecorator(fakeSession);
-    await decorator.open();
-    await decorator.close();
-    expect(
-      decorator.isOpened(),
-      "SessionDecorator did not maintain decorator state independently"
-    ).toBe(true);
-  });
-
-  it("handles wrapped session disposal promise correctly", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
-    const decorator = new TestSessionDecorator(fakeSession);
-    const disposePromise = decorator.close();
-    await disposePromise;
-    expect(
-      fakeSession.isDisposed(),
-      "SessionDecorator did not handle wrapped session disposal promise correctly"
-    ).toBe(true);
+// SessionDecorator removed; keep placeholder so Vitest does not fail on empty file.
+describe.skip("SessionDecorator (removed)", () => {
+  it("placeholder", () => {
+    // intentionally left blank
   });
 });
+
+export {};

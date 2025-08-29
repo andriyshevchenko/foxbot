@@ -17,18 +17,9 @@ import { FakePage } from "./fake-page";
 export class FakeSession implements Session {
   private readonly fakePage = new FakePage();
   private readonly fakeBrowserContext = new FakeBrowserContext();
-  public isOpen = false;
 
-  async open(): Promise<void> {
-    this.isOpen = true;
-  }
-
-  async host(): Promise<BrowserContext> {
+  async profile(): Promise<BrowserContext> {
     return this.fakeBrowserContext as unknown as BrowserContext;
-  }
-
-  async close(): Promise<void> {
-    this.isOpen = false;
   }
 
   page(): Promise<FakePage> {

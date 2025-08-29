@@ -1,24 +1,14 @@
-import type { Route } from "playwright";
+import type { BrowserContext, Route } from "playwright";
 import type { Session } from "./session";
-import { SessionDecorator } from "./session-decorator";
 
 /**
  * Decorator to set up resource blocking for a session.
  */
-export class OptimizedSession extends SessionDecorator {
-  constructor(session: Session) {
-    super(session);
-  }
+export class OptimizedSession implements Session {
+  constructor(private readonly session: Session) {}
 
-  async open(): Promise<void> {
-    await this.setupResourceBlocking();
-  }
-
-  /**
-   * Sets up resource blocking to reduce memory usage and improve stealth.
-   */
-  private async setupResourceBlocking(): Promise<void> {
-    const context = await this.host();
+  async profile(): Promise<BrowserContext> {
+    const context = await this.session.profile();
     await context.route("**/*", async (route: Route) => {
       const resourceType = route.request().resourceType();
       const url = route.request().url();
@@ -29,6 +19,7 @@ export class OptimizedSession extends SessionDecorator {
         await route.continue();
       }
     });
+    return context;
   }
 
   /**
