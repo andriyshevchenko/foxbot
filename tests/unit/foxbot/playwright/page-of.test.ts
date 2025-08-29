@@ -11,9 +11,7 @@ describe("PageOf", () => {
 
     // Create a minimal session mock for construction testing
     const mockSession = {
-      open: () => Promise.resolve(),
-      host: () => Promise.reject(new Error("Not implemented in test mock")),
-      close: () => Promise.resolve(),
+      profile: () => Promise.reject(new Error("Not implemented in test mock")),
     };
 
     // Test that PageOf can be constructed without errors
@@ -30,9 +28,7 @@ describe("PageOf", () => {
     expect.assertions(1);
 
     const mockSession = {
-      open: () => Promise.resolve(),
-      host: () => Promise.reject(new Error("Not implemented in test mock")),
-      close: () => Promise.resolve(),
+      profile: () => Promise.reject(new Error("Not implemented in test mock")),
     };
 
     const sessionPage = new PageOf(mockSession);
