@@ -4,7 +4,6 @@ import type { Device } from "./device";
 import type { Graphics } from "./graphics";
 import type { Host } from "./host";
 import type { Location } from "./location";
-import { SessionDecorator } from "../../foxbot/session";
 import {
   addBoundingRectJitter,
   humanizeFetchTiming,
@@ -20,8 +19,7 @@ import type { Viewport } from "./viewport";
 /**
  * Decorator to inject stealth scripts into a session.
  */
-export class StealthSession extends SessionDecorator {
-  private static readonly DEFAULT_TASKBAR_HEIGHT = 40;
+export class StealthSession implements Session {
   private static readonly PLUGIN_LENGTH = 1;
   private static readonly MAX_MOUSE_EVENTS = 50;
   private static readonly BOUNDING_RECT_JITTER_AMOUNT = 0.1;
@@ -30,25 +28,16 @@ export class StealthSession extends SessionDecorator {
   private static readonly MAX_FETCH_DELAY_MS = 15;
 
   constructor(
-    session: Session,
+    private readonly base: Session,
     private readonly viewport: Viewport,
     private readonly graphics: Graphics,
     private readonly hostConfig: Host,
     private readonly device: Device,
     private readonly location: Location
-  ) {
-    super(session);
-  }
+  ) {}
 
-  async open(): Promise<void> {
-    await this.injectStealthScripts();
-  }
-
-  /**
-   * Injects stealth scripts to mask automation indicators and mimic human behavior.
-   */
-  private async injectStealthScripts(): Promise<void> {
-    const context = await this.host();
+  async profile(): Promise<BrowserContext> {
+    const context = await this.base.profile();
     const sessionData = {
       viewport: this.viewport,
       graphics: this.graphics,
@@ -70,6 +59,7 @@ export class StealthSession extends SessionDecorator {
     await this.injectMouseTracking(context);
     await this.injectBoundingRectJitter(context);
     await this.injectFetchTimingHumanization(context);
+    return context;
   }
 
   private async injectWebDriverRemoval(context: BrowserContext): Promise<void> {

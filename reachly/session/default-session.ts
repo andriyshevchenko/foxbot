@@ -11,9 +11,6 @@ import { Viewport } from "./viewport";
  * It sets up the browser context with user-agent, viewport, timezone, locale, etc.
  */
 export class DefaultSession implements Session {
-  private contextInstance: BrowserContext | undefined;
-  private initialized = false;
-
   constructor(
     private readonly viewport: Viewport,
     private readonly hostConfig: Host,
@@ -24,7 +21,7 @@ export class DefaultSession implements Session {
   /**
    * Opens a new Chromium browser session with LinkedIn-specific configuration.
    */
-  async open(): Promise<void> {
+  async profile(): Promise<BrowserContext> {
     const defaultHttpHeaders = {
       Accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -42,7 +39,7 @@ export class DefaultSession implements Session {
       ? { ...defaultHttpHeaders, ...(await this.hostConfig.headers()) }
       : defaultHttpHeaders;
     const browser = await this.browser_instance.value();
-    this.contextInstance = await browser.newContext({
+    const context = await browser.newContext({
       userAgent: await this.hostConfig.userAgent(),
       viewport: {
         width: await this.viewport.width(),
@@ -62,25 +59,6 @@ export class DefaultSession implements Session {
       },
       extraHTTPHeaders: httpHeaders,
     });
-    this.initialized = true;
-  }
-
-  /**
-   * Returns the browser context instance.
-   */
-  async host(): Promise<BrowserContext> {
-    if (!this.initialized || !this.contextInstance) {
-      throw new Error("Session is not open and context is unavailable - call open() method first");
-    }
-    return this.contextInstance;
-  }
-
-  /**
-   * Cleans up browser resources by closing context.
-   */
-  async close(): Promise<void> {
-    if (this.initialized && this.contextInstance) {
-      await this.contextInstance.close();
-    }
+    return context;
   }
 }
