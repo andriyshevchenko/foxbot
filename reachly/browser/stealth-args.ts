@@ -1,4 +1,4 @@
-import { Query } from "../../foxbot/core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that returns Chromium launch arguments for stealth mode.

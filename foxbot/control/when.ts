@@ -1,4 +1,4 @@
-import { Action, Query } from "../core";
+import { Action, Query } from "#foxbot/core";
 
 /**
  * A conditional action that executes another action only if a predicate is true.

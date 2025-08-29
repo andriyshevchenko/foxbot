@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 import type { Browser } from "playwright";
 
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that launches a Chromium browser instance.

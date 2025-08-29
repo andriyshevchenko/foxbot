@@ -1,4 +1,4 @@
-import type { Action } from "../core/action";
+import type { Action } from "#foxbot/core/action";
 
 /**
  * No-operation action primitive that does nothing when executed.

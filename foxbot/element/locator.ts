@@ -1,6 +1,6 @@
 import type { Page, Locator as PwLocator } from "playwright";
 
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that locates elements on a page using a CSS selector.

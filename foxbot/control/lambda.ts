@@ -1,4 +1,4 @@
-import type { Action } from "../core";
+import type { Action } from "#foxbot/core";
 
 /**
  * An action that executes a provided function when performed.

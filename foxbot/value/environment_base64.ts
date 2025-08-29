@@ -1,4 +1,4 @@
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that retrieves a base64-encoded environment variable and decodes it.

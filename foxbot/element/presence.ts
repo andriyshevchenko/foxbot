@@ -1,6 +1,6 @@
 import type { Locator as PwLocator } from "playwright";
 
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that checks whether an element is present on the page.

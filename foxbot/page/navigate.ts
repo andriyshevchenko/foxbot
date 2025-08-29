@@ -1,6 +1,6 @@
 import type { Page } from "playwright";
 
-import { Action, Query } from "../core";
+import { Action, Query } from "#foxbot/core";
 
 /**
  * An action that navigates a browser page to a specified URL.

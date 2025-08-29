@@ -1,4 +1,4 @@
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that decodes a base64-encoded string.

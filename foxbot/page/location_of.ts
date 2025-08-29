@@ -1,6 +1,6 @@
 import type { Page } from "playwright";
 
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that retrieves the current URL of a page.

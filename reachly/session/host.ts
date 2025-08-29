@@ -1,4 +1,4 @@
-import type { Query } from "../../foxbot/core";
+import type { Query } from "#foxbot/core";
 
 /**
  * Host environment information describing browser-identifying attributes.

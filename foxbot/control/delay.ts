@@ -1,4 +1,4 @@
-import { Action, Query } from "../core";
+import { Action, Query } from "#foxbot/core";
 
 /**
  * An action that waits for a specified number of milliseconds.

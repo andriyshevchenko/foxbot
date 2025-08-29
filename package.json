@@ -47,6 +47,12 @@
     "typescript-eslint": "^8.40.0",
     "vitest": "^3.2.4"
   },
+  "imports": {
+    "#foxbot/*": "./foxbot/*",
+    "#reachly/*": "./reachly/*",
+    "#examples/*": "./examples/*",
+    "#tests/*": "./tests/*"
+  },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "prettier --write",
