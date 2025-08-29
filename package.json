@@ -10,6 +10,8 @@
     "test:watch": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:e2e": "vitest run tests/e2e",
+  "test:verbose": "vitest run --reporter=verbose",
+  "test:e2e:verbose": "vitest run tests/e2e --reporter=verbose",
     "test:coverage": "vitest run --coverage",
     "test:coverage:watch": "vitest --coverage",
     "test:coverage:ui": "vitest --coverage --ui",
