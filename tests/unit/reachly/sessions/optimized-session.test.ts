@@ -8,11 +8,8 @@ describe("OptimizedSession", () => {
   it("creates host context with route handlers", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
     const optimizedSession = new OptimizedSession(fakeSession);
-    await optimizedSession.open();
-    const context = await optimizedSession.host();
-    await optimizedSession.close();
+    const context = await optimizedSession.profile();
     expect(
       context,
       "OptimizedSession did not create host context with route handlers"
@@ -22,11 +19,8 @@ describe("OptimizedSession", () => {
   it("handles host context creation with unicode paths", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
     const optimizedSession = new OptimizedSession(fakeSession);
-    await optimizedSession.open();
-    const context = await optimizedSession.host();
-    await optimizedSession.close();
+    const context = await optimizedSession.profile();
     expect(
       context,
       "OptimizedSession did not handle host context creation with unicode paths"
@@ -36,15 +30,9 @@ describe("OptimizedSession", () => {
   it("opens session without throwing errors", async () => {
     expect.assertions(1);
     const fakeSession = new FakeIntegrationSession();
-    await fakeSession.open();
     const optimizedSession = new OptimizedSession(fakeSession);
-    await expect(optimizedSession.open()).resolves.not.toThrow();
+    await expect(optimizedSession.profile()).resolves.toBeDefined();
   });
 
-  it("throws error when browser called before open", async () => {
-    expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
-    const optimizedSession = new OptimizedSession(fakeSession);
-    await expect(optimizedSession.host()).rejects.toThrow("Session not open");
-  });
+  // Under new lifecycle, profile delegates directly; no pre-open error expected
 });
