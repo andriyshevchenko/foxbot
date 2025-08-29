@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Base64, Environment } from "../../../../foxbot/value";
+import { Base64, Environment } from "#foxbot/value";
 
 describe("LinkedInLogin", () => {
   it("can be instantiated with valid environment variables", async () => {

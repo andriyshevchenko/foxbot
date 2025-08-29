@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PageOf } from "../../../../foxbot/page/page_of";
-import { FakeCoreSession } from "../../../fakes/fake-core-session";
+import { PageOf } from "#foxbot/page/page_of";
+import { FakeCoreSession } from "#tests/fakes/fake-core-session";
 
 describe("PageOf", () => {
   it("returns page from session host context", async () => {

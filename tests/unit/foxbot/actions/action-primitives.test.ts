@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { Fork, Lambda, NoOp, Sequence } from "../../../../foxbot/control";
-import type { Action } from "../../../../foxbot/core";
-import { BooleanLiteral } from "../../../../foxbot/core";
+import { Fork, Lambda, NoOp, Sequence } from "#foxbot/control";
+import type { Action } from "#foxbot/core";
+import { BooleanLiteral } from "#foxbot/core";
 
 describe("Action primitives", () => {
   it("should execute sequence actions in order", async () => {

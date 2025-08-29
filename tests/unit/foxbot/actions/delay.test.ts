@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Delay } from "../../../../foxbot/control/delay";
-import { NumberLiteral } from "../../../../foxbot/value/number_literal";
+import { Delay } from "#foxbot/control/delay";
+import { NumberLiteral } from "#foxbot/value/number_literal";
 
 describe("Delay", () => {
   it("waits for specified milliseconds", async () => {

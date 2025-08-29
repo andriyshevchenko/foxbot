@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { JsonHost } from "../../../../reachly/session/host";
-import { TextLiteral } from "../../../../foxbot/value";
+import { JsonHost } from "#reachly/session/host";
+import { TextLiteral } from "#foxbot/value";
 
 /**
  * Tests for JsonHost methods extracting host attributes from JSON query.

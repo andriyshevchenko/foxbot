@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { AuthenticatedSession } from "../../../../reachly/session/authenticated-session";
-import { JsonHost } from "../../../../reachly/session/host";
+import { AuthenticatedSession } from "#reachly/session/authenticated-session";
+import { JsonHost } from "#reachly/session/host";
 
 import { AuthenticatedTestSessionData, FakeIntegrationSession } from "./index";
 

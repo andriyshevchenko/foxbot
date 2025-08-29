@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NumberLiteral } from "../../../../foxbot/value/number_literal";
+import { NumberLiteral } from "#foxbot/value/number_literal";
 
 describe("NumberLiteral", () => {
   it("returns the provided number value", async () => {

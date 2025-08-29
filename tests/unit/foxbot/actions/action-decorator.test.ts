@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { ActionDecorator } from "../../../../foxbot/control";
-import type { Action } from "../../../../foxbot/core";
+import { ActionDecorator } from "#foxbot/control";
+import type { Action } from "#foxbot/core";
 
 /**
  * Test action implementation that logs execution for verification.

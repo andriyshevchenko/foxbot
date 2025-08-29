@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { OptimizedSession } from "../../../../foxbot/session";
+import { OptimizedSession } from "#foxbot/session";
 
 import { FakeIntegrationSession } from "./index";
 

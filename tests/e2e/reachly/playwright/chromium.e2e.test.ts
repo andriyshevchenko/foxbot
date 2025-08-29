@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { Chromium } from "../../../../foxbot/browser";
+import { Chromium } from "#foxbot/browser";
 
-import { FakeArgs, FakeHeadless } from "../../../fakes/fake-playwright-queries";
+import { FakeArgs, FakeHeadless } from "#tests/fakes/fake-playwright-queries";
 
 describe("Chromium", () => {
   it("launches chromium browser with headless true", async () => {

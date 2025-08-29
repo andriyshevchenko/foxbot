@@ -1,6 +1,6 @@
 import type { Browser } from "playwright";
 import { chromium } from "playwright";
-import type { Query } from "../../foxbot/core";
+import type { Query } from "#foxbot/core";
 
 /**
  * Fake browser query implementation for session testing purposes.
