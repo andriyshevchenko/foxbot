@@ -1,4 +1,4 @@
-import type { Query } from "../../foxbot/core";
+import type { Query } from "#foxbot/core";
 
 /**
  * Viewport and screen dimensions.

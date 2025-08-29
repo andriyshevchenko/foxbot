@@ -1,4 +1,4 @@
-import { Action } from "../core";
+import { Action } from "#foxbot/core";
 
 /**
  * Base decorator class that wraps an action and forwards perform calls.

@@ -1,7 +1,7 @@
 import type { Browser } from "playwright";
-import { Query } from "../../foxbot/core";
-import { OptimizedSession } from "../../foxbot/session";
-import { TextLiteral } from "../../foxbot/value";
+import { Query } from "#foxbot/core";
+import { OptimizedSession } from "#foxbot/session";
+import { TextLiteral } from "#foxbot/value";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -11,7 +11,7 @@ import {
   JsonLocation,
   JsonViewport,
   StealthSession,
-} from "../../reachly/session";
+} from "#reachly/session";
 
 /**
  * Creates LinkedIn session using the decorator composition pattern based on a shared JSON string.

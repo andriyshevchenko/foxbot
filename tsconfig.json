@@ -11,6 +11,13 @@
     "noImplicitOverride": true,
     "rootDir": ".",
     "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "#foxbot/*": ["foxbot/*"],
+      "#reachly/*": ["reachly/*"],
+      "#examples/*": ["examples/*"],
+      "#tests/*": ["tests/*"]
+    },
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,

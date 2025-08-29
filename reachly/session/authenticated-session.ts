@@ -1,5 +1,5 @@
 import { BrowserContext } from "playwright";
-import type { Session } from "../../foxbot/session";
+import type { Session } from "#foxbot/session";
 import { Host } from "./host";
 
 /**

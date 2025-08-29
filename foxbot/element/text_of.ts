@@ -1,6 +1,6 @@
 import type { Locator as PwLocator } from "playwright";
 
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that extracts the text content from a web element.

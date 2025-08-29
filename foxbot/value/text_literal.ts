@@ -1,4 +1,4 @@
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that returns a string literal value.

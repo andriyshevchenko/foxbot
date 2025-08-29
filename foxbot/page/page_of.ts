@@ -1,7 +1,7 @@
 import type { Page } from "playwright";
 
-import { Query } from "../core";
-import type { Session } from "../session";
+import { Query } from "#foxbot/core";
+import type { Session } from "#foxbot/session";
 
 /**
  * A query that retrieves an existing page from a browser session.

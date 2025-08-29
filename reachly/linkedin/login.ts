@@ -1,8 +1,8 @@
-import { ActionDecorator, Delay, Sequence } from "../../foxbot/control";
-import { Click, Fill, Locator } from "../../foxbot/element";
-import { Navigate, PageOf } from "../../foxbot/page";
-import { Base64, Environment, NumberLiteral, RandomDelay, TextLiteral } from "../../foxbot/value";
-import type { Session } from "../../foxbot/session";
+import { ActionDecorator, Delay, Sequence } from "#foxbot/control";
+import { Click, Fill, Locator } from "#foxbot/element";
+import { Navigate, PageOf } from "#foxbot/page";
+import { Base64, Environment, NumberLiteral, RandomDelay, TextLiteral } from "#foxbot/value";
+import type { Session } from "#foxbot/session";
 
 /**
  * LinkedIn login workflow that authenticates using credentials from environment variables.

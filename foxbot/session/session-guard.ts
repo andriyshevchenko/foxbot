@@ -1,4 +1,4 @@
-import type { Action } from "../core/action";
+import type { Action } from "#foxbot/core/action";
 import type { Session } from "./session";
 
 /**

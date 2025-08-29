@@ -1,6 +1,6 @@
 import type { Locator as PwLocator } from "playwright";
 
-import { Action, Query } from "../core";
+import { Action, Query } from "#foxbot/core";
 
 /**
  * An action that clicks on a web element.

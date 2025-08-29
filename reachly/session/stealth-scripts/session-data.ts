@@ -1,8 +1,8 @@
-import type { Device } from "../device";
-import type { Graphics } from "../graphics";
-import type { Host } from "../host";
-import type { Location } from "../location";
-import type { Viewport } from "../viewport";
+import type { Device } from "#reachly/session/device";
+import type { Graphics } from "#reachly/session/graphics";
+import type { Host } from "#reachly/session/host";
+import type { Location } from "#reachly/session/location";
+import type { Viewport } from "#reachly/session/viewport";
 
 export interface SessionData {
   viewport: Viewport;

@@ -1,5 +1,5 @@
-import type { Action } from "../core/action";
-import type { Query } from "../core/query";
+import type { Action } from "#foxbot/core/action";
+import type { Query } from "#foxbot/core/query";
 
 /**
  * Fork action primitive that executes one of two actions based on a condition.

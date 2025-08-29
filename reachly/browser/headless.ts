@@ -1,4 +1,4 @@
-import { Query } from "../../foxbot/core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that determines if the browser should run in headless mode.

@@ -1,4 +1,4 @@
-import { Action } from "../core";
+import { Action } from "#foxbot/core";
 
 /**
  * An action that executes multiple actions in sequence.

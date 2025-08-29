@@ -1,4 +1,4 @@
-import { Query } from "../core";
+import { Query } from "#foxbot/core";
 
 /**
  * A query that generates a random delay between specified minimum and maximum bounds.
