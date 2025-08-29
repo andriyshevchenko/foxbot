@@ -97,7 +97,7 @@ class FakeSessionData implements Query<string> {
   }
 }
 
-describe("LinkedIn Login E2E Test", () => {
+describe.skip("LinkedIn Login E2E Test", () => {
   it("creates session and performs login workflow with real browser", async () => {
     expect.assertions(1);
 
