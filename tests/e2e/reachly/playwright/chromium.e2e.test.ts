@@ -15,7 +15,9 @@ describe("Chromium", () => {
     expect(browser, "Chromium did not launch a browser instance").toBeDefined();
   });
 
-  it("launches chromium browser with headless false", async () => {
+  const displayAvailable = !!process.env.DISPLAY;
+
+  (displayAvailable ? it : it.skip)("launches chromium browser with headless false", async () => {
     expect.assertions(1);
     const headless = new FakeHeadless(false);
     const args = new FakeArgs("--no-sandbox,--disable-gpu");

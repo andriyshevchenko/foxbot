@@ -1,8 +1,11 @@
 import type { Browser } from "playwright";
 import { describe, expect, it } from "vitest";
-import type { Query } from "../../../foxbot/core";
-import { Headless, StealthArgs } from "../../../reachly/browser";
 import { Chromium } from "../../../foxbot/browser";
+import { Lambda, Sequence } from "../../../foxbot/control";
+import type { Query } from "../../../foxbot/core";
+import { OptimizedSession, Session, SessionGuard } from "../../../foxbot/session";
+import { Headless, StealthArgs } from "../../../reachly/browser";
+import { LinkedInLogin } from "../../../reachly/linkedin";
 import {
   AuthenticatedSession,
   DefaultSession,
@@ -13,14 +16,6 @@ import {
   JsonViewport,
   StealthSession,
 } from "../../../reachly/session";
-import { LinkedInLogin } from "../../../reachly/linkedin";
-import {
-  OpenSession,
-  SessionGuard,
-  SessionDecorator,
-  OptimizedSession,
-} from "../../../foxbot/session";
-import { Sequence, Lambda } from "../../../foxbot/control";
 
 /**
  * LinkedIn session decorator that composes stealth, optimization, and authentication capabilities.
@@ -29,10 +24,11 @@ import { Sequence, Lambda } from "../../../foxbot/control";
  * @example
  * ```typescript
  * const session = new LinkedInSession(jsonQuery, browserQuery);
- * await session.open();
+ * const context = await session.profile();
  * ```
  */
-class LinkedInSession extends SessionDecorator {
+class LinkedInSession implements Session {
+  private readonly chain: Session;
   constructor(jsonSource: Query<string>, browserQuery: Query<Browser>) {
     const baseSession = new DefaultSession(
       new JsonViewport(jsonSource),
@@ -42,10 +38,8 @@ class LinkedInSession extends SessionDecorator {
     );
 
     const authenticatedSession = new AuthenticatedSession(baseSession, new JsonHost(jsonSource));
-
     const optimizedSession = new OptimizedSession(authenticatedSession);
-
-    const stealthSession = new StealthSession(
+    this.chain = new StealthSession(
       optimizedSession,
       new JsonViewport(jsonSource),
       new JsonGraphics(jsonSource),
@@ -53,12 +47,9 @@ class LinkedInSession extends SessionDecorator {
       new JsonDevice(jsonSource),
       new JsonLocation(jsonSource)
     );
-
-    super(stealthSession);
   }
-
-  async open(): Promise<void> {
-    // Session is assumed to be already open
+  async profile() {
+    return this.chain.profile();
   }
 }
 
@@ -110,11 +101,10 @@ describe.skip("LinkedIn Login E2E Test", () => {
 
     await new SessionGuard(
       new Sequence([
-        new OpenSession(session),
         new LinkedInLogin(session),
         new Lambda(async () => {
           expect(
-            await session.host(),
+            await session.profile(),
             "LinkedIn session failed to create host context"
           ).toBeDefined();
         }),
@@ -132,7 +122,6 @@ describe.skip("LinkedIn Login E2E Test", () => {
 
     await new SessionGuard(
       new Sequence([
-        new OpenSession(session),
         new LinkedInLogin(session),
         new Lambda(async () => {
           expect(true, "LinkedIn login workflow did not complete successfully").toBe(true);
