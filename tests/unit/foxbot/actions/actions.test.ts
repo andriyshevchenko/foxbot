@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { Fork, NoOp, Sequence, When } from "../../../../foxbot/control";
-import type { Action, Query } from "../../../../foxbot/core";
-import { BooleanLiteral } from "../../../../foxbot/core";
+import { Fork, NoOp, Sequence, When } from "#foxbot/control";
+import type { Action, Query } from "#foxbot/core";
+import { BooleanLiteral } from "#foxbot/core";
 
 // Removed FakeSession usage after OpenSession removal
 

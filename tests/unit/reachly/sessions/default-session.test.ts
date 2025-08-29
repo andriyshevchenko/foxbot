@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { DefaultSession } from "../../../../reachly/session/default-session";
-import { JsonHost } from "../../../../reachly/session/host";
-import { JsonLocation } from "../../../../reachly/session/location";
-import { JsonViewport } from "../../../../reachly/session/viewport";
+import { DefaultSession } from "#reachly/session/default-session";
+import { JsonHost } from "#reachly/session/host";
+import { JsonLocation } from "#reachly/session/location";
+import { JsonViewport } from "#reachly/session/viewport";
 
 import { FakeBrowser, TestSessionData } from "./index";
 

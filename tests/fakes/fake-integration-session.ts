@@ -1,6 +1,6 @@
 import type { BrowserContext } from "playwright";
 import { chromium } from "playwright";
-import type { Session } from "../../foxbot/session";
+import type { Session } from "#foxbot/session";
 
 /**
  * Fake session implementation for integration style tests that need a real

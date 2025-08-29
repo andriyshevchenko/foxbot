@@ -1,4 +1,4 @@
-import { Query } from "../../../../foxbot/core/query";
+import { Query } from "#foxbot/core/query";
 
 /**
  * Authenticated test session data generator implementing Query<string>.

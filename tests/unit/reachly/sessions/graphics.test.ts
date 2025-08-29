@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { JsonGraphics } from "../../../../reachly/session/graphics";
-import { TextLiteral } from "../../../../foxbot/value";
+import { JsonGraphics } from "#reachly/session/graphics";
+import { TextLiteral } from "#foxbot/value";
 
 /**
  * Tests for JsonGraphics extracting WebGL characteristics.

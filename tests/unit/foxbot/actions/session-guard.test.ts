@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { Action } from "../../../../foxbot/core";
-import { SessionGuard } from "../../../../foxbot/session";
-import { FakeSession } from "../../../fakes/fake-session";
+import type { Action } from "#foxbot/core";
+import { SessionGuard } from "#foxbot/session";
+import { FakeSession } from "#tests/fakes/fake-session";
 
 /**
  * Test action implementation that succeeds without side effects.

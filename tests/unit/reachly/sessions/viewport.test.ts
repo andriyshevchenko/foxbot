@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { JsonViewport } from "../../../../reachly/session/viewport";
-import { TextLiteral } from "../../../../foxbot/value";
+import { JsonViewport } from "#reachly/session/viewport";
+import { TextLiteral } from "#foxbot/value";
 
 /**
  * Tests for JsonViewport extracting dimensional attributes.
