@@ -31,7 +31,8 @@ export class SessionGuard implements Action {
     try {
       await this.target.perform();
     } finally {
-      await this.session.close();
+      const profile = await this.session.profile();
+      await profile.close();
     }
   }
 }
