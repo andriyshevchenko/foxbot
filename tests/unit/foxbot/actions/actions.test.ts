@@ -79,17 +79,18 @@ describe("actions", () => {
     });
 
     it("executes actions in numerical order", async () => {
+      expect.assertions(1);
       const executionOrder: number[] = [];
       const actions = [
         new TestAction(executionOrder, 1),
         new TestAction(executionOrder, 2),
         new TestAction(executionOrder, 3),
       ];
-
       const sequence = new Sequence(actions);
       await sequence.perform();
-
-      expect(executionOrder).toEqual([1, 2, 3]);
+      expect(executionOrder, "Sequence did not execute actions in numerical order").toEqual([
+        1, 2, 3,
+      ]);
     });
   });
 
@@ -107,65 +108,98 @@ describe("actions", () => {
 
   describe("NoOp", () => {
     it("completes without error", async () => {
+      expect.assertions(1);
       const noOp = new NoOp();
-      await noOp.perform(); // Should not throw
+      await expect(noOp.perform(), "NoOp threw an error").resolves.toBeUndefined();
     });
   });
 
   describe("Fork", () => {
     it("executes then action when condition is true", async () => {
-      expect.assertions(2);
+      expect.assertions(1);
       const log: string[] = [];
       const thenAction = new ProbeAction(log, "then");
       const elseAction = new ProbeAction(log, "else");
-      const trueFork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
-      await trueFork.perform();
+      const fork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
+      await fork.perform();
       expect(log.includes("then"), "Then action was not executed when condition was true").toBe(
         true
       );
+    });
+    it("skips else action when condition is true", async () => {
+      expect.assertions(1);
+      const log: string[] = [];
+      const thenAction = new ProbeAction(log, "then");
+      const elseAction = new ProbeAction(log, "else");
+      const fork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
+      await fork.perform();
       expect(log.includes("else"), "Else action was executed when condition was true").toBe(false);
     });
 
     it("executes else action when condition is false", async () => {
-      expect.assertions(2);
+      expect.assertions(1);
       const log: string[] = [];
       const thenAction = new ProbeAction(log, "then");
       const elseAction = new ProbeAction(log, "else");
-      const falseFork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
-      await falseFork.perform();
-      expect(log.includes("then"), "Then action was executed when condition was false").toBe(false);
+      const fork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
+      await fork.perform();
       expect(log.includes("else"), "Else action was not executed when condition was false").toBe(
         true
       );
     });
+    it("skips then action when condition is false", async () => {
+      expect.assertions(1);
+      const log: string[] = [];
+      const thenAction = new ProbeAction(log, "then");
+      const elseAction = new ProbeAction(log, "else");
+      const fork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
+      await fork.perform();
+      expect(log.includes("then"), "Then action was executed when condition was false").toBe(false);
+    });
 
-    it("executes actions based on condition with callbacks", async () => {
+    it("executes callback in then branch when condition is true", async () => {
+      expect.assertions(1);
       let thenExecuted = false;
-      let elseExecuted = false;
-
       const thenAction = new ThenAction(() => {
         thenExecuted = true;
       });
+      const elseAction = new ElseAction(() => {});
+      const fork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
+      await fork.perform();
+      expect(thenExecuted, "Then callback was not executed when condition was true").toBe(true);
+    });
+    it("skips else callback when condition is true", async () => {
+      expect.assertions(1);
+      let elseExecuted = false;
+      const thenAction = new ThenAction(() => {});
       const elseAction = new ElseAction(() => {
         elseExecuted = true;
       });
-
-      // Test true condition
-      const trueFork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
-      await trueFork.perform();
-
-      expect(thenExecuted).toBe(true);
-      expect(elseExecuted).toBe(false);
-
-      // Reset and test false condition
-      thenExecuted = false;
-      elseExecuted = false;
-
-      const falseFork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
-      await falseFork.perform();
-
-      expect(thenExecuted).toBe(false);
-      expect(elseExecuted).toBe(true);
+      const fork = new Fork(new BooleanLiteral(true), thenAction, elseAction);
+      await fork.perform();
+      expect(elseExecuted, "Else callback was executed when condition was true").toBe(false);
+    });
+    it("executes else callback when condition is false", async () => {
+      expect.assertions(1);
+      let elseExecuted = false;
+      const thenAction = new ThenAction(() => {});
+      const elseAction = new ElseAction(() => {
+        elseExecuted = true;
+      });
+      const fork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
+      await fork.perform();
+      expect(elseExecuted, "Else callback was not executed when condition was false").toBe(true);
+    });
+    it("skips then callback when condition is false", async () => {
+      expect.assertions(1);
+      let thenExecuted = false;
+      const thenAction = new ThenAction(() => {
+        thenExecuted = true;
+      });
+      const elseAction = new ElseAction(() => {});
+      const fork = new Fork(new BooleanLiteral(false), thenAction, elseAction);
+      await fork.perform();
+      expect(thenExecuted, "Then callback was executed when condition was false").toBe(false);
     });
   });
 
