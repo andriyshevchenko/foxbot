@@ -70,7 +70,7 @@ describe("DefaultSession", () => {
     const viewport = page.viewportSize();
     await page.close();
     expect(
-      viewport?.width,
+      viewport.width,
       "DefaultSession did not create context with specified viewport width"
     ).toBe(800);
   }, 10000);

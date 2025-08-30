@@ -11,10 +11,10 @@
 export class FakePage {
   private navigatedUrl = "";
   private readonly locators = new Map<string, FakeLocator>();
-
-  goto(url: string): Promise<null> {
+  private viewport = { width: 0, height: 0 };
+  goto(url: string): Promise<void> {
     this.navigatedUrl = url;
-    return Promise.resolve(null);
+    return Promise.resolve();
   }
 
   locator(selector: string): FakeLocator {
@@ -26,6 +26,18 @@ export class FakePage {
 
   url(): string {
     return this.navigatedUrl;
+  }
+
+  setViewport(viewport: { width: number; height: number }): void {
+    this.viewport = viewport;
+  }
+
+  viewportSize(): { width: number; height: number } {
+    return this.viewport;
+  }
+
+  close(): Promise<void> {
+    return Promise.resolve();
   }
 }
 

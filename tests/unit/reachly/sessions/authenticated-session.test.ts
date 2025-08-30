@@ -3,12 +3,12 @@ import { describe, expect, it } from "vitest";
 import { AuthenticatedSession } from "#reachly/session/authenticated-session";
 import { JsonHost } from "#reachly/session/host";
 
-import { AuthenticatedTestSessionData, FakeIntegrationSession } from "./index";
+import { AuthenticatedTestSessionData, FakeSession } from "./index";
 
 describe("AuthenticatedSession", () => {
   it("adds LinkedIn cookies to host context", async () => {
     expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
+    const fakeSession = new FakeSession();
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
@@ -27,7 +27,7 @@ describe("AuthenticatedSession", () => {
 
   it("adds additional cookies from session data", async () => {
     expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
+    const fakeSession = new FakeSession();
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,
       new JsonHost(new AuthenticatedTestSessionData(new Map()))
@@ -44,7 +44,7 @@ describe("AuthenticatedSession", () => {
 
   it("sets secure flag on LinkedIn cookies", async () => {
     expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
+    const fakeSession = new FakeSession();
 
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,
@@ -62,7 +62,7 @@ describe("AuthenticatedSession", () => {
 
   it("sets httpOnly flag on LinkedIn cookies", async () => {
     expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
+    const fakeSession = new FakeSession();
 
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,
@@ -80,7 +80,7 @@ describe("AuthenticatedSession", () => {
 
   it("handles session data without additional cookies", async () => {
     expect.assertions(1);
-    const fakeSession = new FakeIntegrationSession();
+    const fakeSession = new FakeSession();
 
     const authenticatedSession = new AuthenticatedSession(
       fakeSession,

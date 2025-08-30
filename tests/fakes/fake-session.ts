@@ -1,6 +1,3 @@
-import type { BrowserContext } from "playwright";
-import type { Query } from "#foxbot/core/query";
-import type { Session } from "#foxbot/session";
 import { FakeBrowserContext } from "./fake-browser-context";
 import { FakePage } from "./fake-page";
 
@@ -14,12 +11,12 @@ import { FakePage } from "./fake-page";
  * const page = await session.page();
  * ```
  */
-export class FakeSession implements Session {
+export class FakeSession {
   private readonly fakePage = new FakePage();
   private readonly fakeBrowserContext = new FakeBrowserContext();
 
-  async profile(): Promise<BrowserContext> {
-    return this.fakeBrowserContext as unknown as BrowserContext;
+  profile() {
+    return Promise.resolve(this.fakeBrowserContext);
   }
 
   page(): Promise<FakePage> {
@@ -37,7 +34,7 @@ export class FakeSession implements Session {
  * const session = await sessionQuery.value();
  * ```
  */
-export function fakeSession(): Query<FakeSession> {
+export function fakeSession() {
   return {
     value: () => Promise.resolve(new FakeSession()),
   };

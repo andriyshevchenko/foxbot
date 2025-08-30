@@ -1,25 +1,43 @@
 import { FakePage } from "./fake-page";
 
-/**
- * Fake browser context implementation for testing purposes.
- * Only implements methods actually used in tests to avoid violating type rules.
- */
+export interface FakeCookie {
+  name: string;
+  value: string;
+}
+
 export class FakeBrowserContext {
   private readonly fakePage = new FakePage();
+  private readonly storedCookies: FakeCookie[] = [];
+  constructor(private readonly viewport = { width: 0, height: 0 }) {}
 
   newPage(): Promise<FakePage> {
+    this.fakePage.setViewport(this.viewport);
     return Promise.resolve(this.fakePage);
   }
 
   pages(): FakePage[] {
+    this.fakePage.setViewport(this.viewport);
     return [this.fakePage];
   }
 
-  async close(): Promise<void> {
-    // No-op for test
+  close(): Promise<void> {
+    return Promise.resolve();
   }
 
-  async addCookies(): Promise<void> {
-    // No-op for test
+  addCookies(cookies: FakeCookie[]): Promise<void> {
+    this.storedCookies.push(...cookies);
+    return Promise.resolve();
+  }
+
+  cookies(): Promise<FakeCookie[]> {
+    return Promise.resolve(this.storedCookies);
+  }
+
+  addInitScript(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  route(): Promise<void> {
+    return Promise.resolve();
   }
 }
