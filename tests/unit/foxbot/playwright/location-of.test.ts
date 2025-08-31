@@ -7,7 +7,9 @@ describe("LocationOf", () => {
     expect.assertions(1);
     const page = new FakePage();
     await page.goto("https://example.com");
-    const pageQuery = { value: async () => page };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const anyPage: any = page;
+    const pageQuery = { value: async () => anyPage };
     const location = new LocationOf(pageQuery);
     await expect(
       location.value(),

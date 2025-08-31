@@ -68,6 +68,9 @@ describe("DefaultSession", () => {
     const context = await session.profile();
     const page = await context.newPage();
     const viewport = page.viewportSize();
+    if (!viewport) {
+      throw new Error("DefaultSession did not set viewport size");
+    }
     await page.close();
     expect(
       viewport.width,

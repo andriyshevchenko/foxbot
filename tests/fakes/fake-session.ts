@@ -1,3 +1,6 @@
+import type { BrowserContext } from "playwright";
+
+import type { Session } from "#foxbot/session";
 import { FakeBrowserContext } from "./fake-browser-context";
 import { FakePage } from "./fake-page";
 
@@ -11,12 +14,14 @@ import { FakePage } from "./fake-page";
  * const page = await session.page();
  * ```
  */
-export class FakeSession {
+export class FakeSession implements Session {
   private readonly fakePage = new FakePage();
   private readonly fakeBrowserContext = new FakeBrowserContext();
 
-  profile() {
-    return Promise.resolve(this.fakeBrowserContext);
+  profile(): Promise<BrowserContext> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const context: any = this.fakeBrowserContext;
+    return Promise.resolve(context);
   }
 
   page(): Promise<FakePage> {

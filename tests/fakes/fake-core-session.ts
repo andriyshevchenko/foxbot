@@ -8,11 +8,17 @@
  * const context = await session.profile();
  * ```
  */
-export class FakeCoreSession {
-  async profile() {
-    return {
+import type { BrowserContext } from "playwright";
+
+import type { Session } from "#foxbot/session";
+
+export class FakeCoreSession implements Session {
+  async profile(): Promise<BrowserContext> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const context: any = {
       newPage: async () => ({}),
       pages: () => [{}],
     };
+    return context;
   }
 }

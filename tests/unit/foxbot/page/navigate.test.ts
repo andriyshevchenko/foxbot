@@ -7,7 +7,9 @@ describe("Navigate", () => {
   it("navigates page to provided url", async () => {
     expect.assertions(1);
     const page = new FakePage();
-    const pageQuery = { value: () => Promise.resolve(page) };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const anyPage: any = page;
+    const pageQuery = { value: () => Promise.resolve(anyPage) };
     const urlQuery = { value: () => Promise.resolve("https://example.com") };
     const navigate = new Navigate(pageQuery, urlQuery);
     await navigate.perform();
