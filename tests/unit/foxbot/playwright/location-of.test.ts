@@ -10,8 +10,13 @@ describe("LocationOf", () => {
     expect.assertions(1);
     const page = new FakePage();
     await page.goto("https://example.com");
-    const pageQuery: Query<Page> = { value: async () => page as unknown as Page };
-    const location = new LocationOf(pageQuery);
+    class FakePageQuery implements Query<Page> {
+      async value(): Promise<Page> {
+        // @ts-expect-error using fake page
+        return page;
+      }
+    }
+    const location = new LocationOf(new FakePageQuery());
     await expect(
       location.value(),
       "LocationOf did not resolve to the current page URL"

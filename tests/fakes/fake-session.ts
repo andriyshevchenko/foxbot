@@ -19,7 +19,8 @@ export class FakeSession implements Session {
   private readonly fakeBrowserContext = new FakeBrowserContext();
 
   async profile(): Promise<BrowserContext> {
-    return this.fakeBrowserContext as unknown as BrowserContext;
+    // @ts-expect-error returning fake context
+    return this.fakeBrowserContext;
   }
 
   page(): Promise<FakePage> {
