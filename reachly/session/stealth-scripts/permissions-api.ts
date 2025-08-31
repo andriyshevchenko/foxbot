@@ -1,14 +1,23 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Spoofs permissions API to handle notification permissions properly.
+ * Spoofs the Permissions API for notification queries.
+ *
+ * @example
+ * ```typescript
+ * const q = new PermissionsApi();
+ * const s = await q.value();
+ * ```
  */
-export function spoofPermissionsApi(): string {
-  return `
-    const originalQuery = window.navigator.permissions.query;
-    window.navigator.permissions.query = (parameters: PermissionDescriptor) => {
-      if (parameters.name === "notifications") {
-        return Promise.resolve({ state: Notification.permission } as PermissionStatus);
-      }
-      return originalQuery(parameters);
-    };
-  `;
+export class PermissionsApi implements Query<string> {
+  constructor(
+    private readonly code: string = `const query = navigator.permissions.query.bind(navigator.permissions);
+navigator.permissions.query = permission =>
+  permission.name === "notifications"
+    ? Promise.resolve({ state: Notification.permission })
+    : query(permission);`
+  ) {}
+  async value(): Promise<string> {
+    return this.code;
+  }
 }

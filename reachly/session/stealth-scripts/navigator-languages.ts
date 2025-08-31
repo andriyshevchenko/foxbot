@@ -1,12 +1,21 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Spoofs navigator languages based on host locale.
+ * Generates a script spoofing navigator.languages.
+ *
+ * @example
+ * ```typescript
+ * const q = new NavigatorLanguages("en-US");
+ * const s = await q.value();
+ * ```
  */
-export function spoofNavigatorLanguages(): string {
-  return `
-    const localeString = await sessionData.host.locale();
-    const localeParts = localeString.split("-");
-    Object.defineProperty(navigator, "languages", {
-      get: () => [localeString, localeParts[0]],
-    });
-  `;
+export class NavigatorLanguages implements Query<string> {
+  constructor(private readonly locale: string) {}
+  async value(): Promise<string> {
+    const root = this.locale.split("-")[0];
+    const code = `Object.defineProperty(navigator, "languages", {
+  get: () => ["${this.locale}", "${root}"]
+});`;
+    return code;
+  }
 }

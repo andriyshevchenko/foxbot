@@ -1,10 +1,21 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Removes webdriver property from navigator to avoid detection.
+ * Removes navigator.webdriver indicator.
+ *
+ * @example
+ * ```typescript
+ * const q = new WebDriverRemoval();
+ * const s = await q.value();
+ * ```
  */
-export function removeWebDriverProperty(): string {
-  return `
-    Object.defineProperty(navigator, "webdriver", {
-      get: () => undefined,
-    });
-  `;
+export class WebDriverRemoval implements Query<string> {
+  constructor(
+    private readonly code: string = `Object.defineProperty(navigator, "webdriver", {
+  get: () => undefined
+});`
+  ) {}
+  async value(): Promise<string> {
+    return this.code;
+  }
 }

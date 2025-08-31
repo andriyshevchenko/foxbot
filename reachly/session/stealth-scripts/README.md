@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `StealthSession` class has been refactored to use a modular approach for injecting stealth scripts. Instead of having one large `addInitScript` call with all stealth mechanisms combined, each stealth technique is now separated into its own function and can be injected independently.
+The `StealthSession` class uses a modular approach for injecting stealth scripts. Instead of one large `addInitScript` call, each stealth technique resides in its own class implementing `Query<string>` and can be injected independently.
 
 ## Benefits of Modular Approach
 
@@ -14,7 +14,7 @@ The `StealthSession` class has been refactored to use a modular approach for inj
 
 ### 2. **Testability**
 
-- Each script function can be unit tested independently
+- Each script class can be unit tested independently
 - Easier to verify the correct script generation for each technique
 - Better test coverage and more focused test cases
 
@@ -42,8 +42,7 @@ The `StealthSession` class has been refactored to use a modular approach for inj
 
 ```
 stealth-scripts/
-├── index.ts                    # Exports all stealth functions
-├── session-data.ts            # TypeScript interfaces
+├── index.ts                    # Exports all stealth classes
 ├── webdriver-removal.ts       # Removes navigator.webdriver
 ├── cdc-removal.ts            # Removes Chrome DevTools Console properties
 ├── chrome-runtime.ts         # Spoofs window.chrome.runtime
@@ -99,17 +98,17 @@ const stealthSession = new ConfigurableStealthSession(baseSession, {
 ### Custom Script Testing
 
 ```typescript
-import { spoofNavigatorPlugins } from "./stealth-scripts";
+import { NavigatorPlugins } from "./stealth-scripts";
 
 // Test individual script generation
-const script = spoofNavigatorPlugins(2);
+const script = await new NavigatorPlugins(2).value();
 console.log(script); // Generated JavaScript code
 ```
 
 ## Adding New Stealth Techniques
 
 1. **Create a new script file** in `stealth-scripts/`
-2. **Export a function** that returns a JavaScript string
+2. **Export a class** implementing `Query<string>` that returns a JavaScript string
 3. **Add the export** to `stealth-scripts/index.ts`
 4. **Create an injection method** in `StealthSession`
 5. **Call the method** from `injectStealthScripts()`
@@ -119,23 +118,25 @@ console.log(script); // Generated JavaScript code
 
 ```typescript
 // stealth-scripts/example-technique.ts
-export function spoofExampleProperty(value: string): string {
-  return `
-    Object.defineProperty(navigator, "exampleProperty", {
-      get: () => "${value}",
-    });
-  `;
+import type { Query } from "#foxbot/core";
+
+export class ExampleTechnique implements Query<string> {
+  constructor(private readonly value: string) {}
+  async value(): Promise<string> {
+    return `Object.defineProperty(navigator,"exampleProperty",{get:()=>"${this.value}"});`;
+  }
 }
 
 // In StealthSession class
 private async injectExampleSpoof(context: BrowserContext): Promise<void> {
-  await context.addInitScript(spoofExampleProperty("fake-value"));
+  const script = await new ExampleTechnique("fake-value").value();
+  await context.addInitScript(script);
 }
 ```
 
 ## Testing
 
-Each stealth script function is unit tested to verify:
+Each stealth script class is unit tested to verify:
 
 - Correct JavaScript code generation
 - Proper parameter substitution
@@ -154,6 +155,6 @@ The original monolithic `addInitScript` has been replaced with:
 1. **Multiple focused methods** for better organization
 2. **Proper TypeScript typing** with `BrowserContext` and `SessionData`
 3. **Individual script injection** for better error isolation
-4. **Modular script functions** for reusability
+4. **Modular script classes** for reusability
 
 This refactoring maintains the same functionality while significantly improving code quality, maintainability, and testability.

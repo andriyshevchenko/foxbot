@@ -1,11 +1,23 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Removes Chrome DevTools Console (CDC) properties that indicate automation.
+ * Produces a script removing Chrome DevTools exposure properties.
+ *
+ * @example
+ * ```typescript
+ * const q = new CdcRemoval();
+ * const s = await q.value();
+ * ```
  */
-export function removeCdcProperties(): string {
-  return `
-    const windowWithCdc = window as unknown as Record<string, unknown>;
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Array"];
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Promise"];
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Symbol"];
-  `;
+export class CdcRemoval implements Query<string> {
+  constructor(
+    private readonly code: string = `[
+  "cdc_adoQpoasnfa76pfcZLmcfl_Array",
+  "cdc_adoQpoasnfa76pfcZLmcfl_Promise",
+  "cdc_adoQpoasnfa76pfcZLmcfl_Symbol"
+].forEach(prop => delete window[prop]);`
+  ) {}
+  async value(): Promise<string> {
+    return this.code;
+  }
 }

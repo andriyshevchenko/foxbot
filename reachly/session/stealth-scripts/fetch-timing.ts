@@ -1,16 +1,32 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Adds human-like delays to fetch requests.
+ * Timing range for humanized fetch delays.
+ *
+ * @example
+ * ```typescript
+ * const t: FetchTimingProps = { minDelayMs: 5, maxDelayMs: 15 };
+ * ```
  */
-export function humanizeFetchTiming(minDelayMs: number, maxDelayMs: number): string {
-  return `
-    const originalFetch = window.fetch;
-    window.fetch = function (input: RequestInfo | URL, init?: RequestInit) {
-      const humanDelay = Math.random() * (${maxDelayMs} - ${minDelayMs}) + ${minDelayMs};
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(originalFetch(input, init));
-        }, humanDelay);
-      });
-    };
-  `;
+export interface FetchTimingProps {
+  /** Minimum delay in milliseconds. */
+  readonly minDelayMs: number;
+  /** Maximum delay in milliseconds. */
+  readonly maxDelayMs: number;
+}
+
+/**
+ * Builds a script that delays fetch requests to mimic humans.
+ */
+export class FetchTiming implements Query<string> {
+  constructor(private readonly props: FetchTimingProps) {}
+  async value(): Promise<string> {
+    const { minDelayMs, maxDelayMs } = this.props;
+    const code = `const originalFetch = fetch.bind(window);
+window.fetch = (input, init) => {
+  const delay = Math.random() * (${maxDelayMs} - ${minDelayMs}) + ${minDelayMs};
+  return new Promise(result => setTimeout(() => result(originalFetch(input, init)), delay));
+};`;
+    return code;
+  }
 }

@@ -1,15 +1,23 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Spoofs Chrome runtime to mimic a real browser environment.
+ * Produces a script spoofing the chrome.runtime object.
+ *
+ * @example
+ * ```typescript
+ * const q = new ChromeRuntime();
+ * const s = await q.value();
+ * ```
  */
-export function spoofChromeRuntime(): string {
-  return `
-    Object.defineProperty(window, "chrome", {
-      get: () => ({
-        runtime: {
-          onConnect: undefined,
-          onMessage: undefined,
-        },
-      }),
-    });
-  `;
+export class ChromeRuntime implements Query<string> {
+  constructor(
+    private readonly code: string = `Object.defineProperty(window, "chrome", {
+  get: () => ({
+    runtime: { onConnect: undefined, onMessage: undefined }
+  })
+});`
+  ) {}
+  async value(): Promise<string> {
+    return this.code;
+  }
 }

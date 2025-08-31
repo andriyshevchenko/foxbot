@@ -1,31 +1,39 @@
+import type { Query } from "#foxbot/core";
+
 /**
- * Spoofs WebGL context to return custom vendor and renderer information.
+ * Parameters for WebGL vendor and renderer spoofing.
+ *
+ * @example
+ * ```typescript
+ * const p: WebGLProps = { vendor: "Vendor", renderer: "Renderer" };
+ * ```
  */
-export function spoofWebGLContext(): string {
-  return `
-    if ((await sessionData.graphics.webglVendor()) || (await sessionData.graphics.webglRenderer())) {
-      const originalGetContext = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (
-        this: HTMLCanvasElement,
-        contextType: string,
-        ...args: unknown[]
-      ) {
-        const context = originalGetContext.call(this, contextType, ...args);
-        if ((contextType === "webgl" || contextType === "experimental-webgl") && context) {
-          const gl = context as WebGLRenderingContext;
-          const originalGetParameter = gl.getParameter;
-          gl.getParameter = async function (pname: number) {
-            if (pname === gl.VENDOR && (await sessionData.graphics.webglVendor())) {
-              return await sessionData.graphics.webglVendor();
-            }
-            if (pname === gl.RENDERER && (await sessionData.graphics.webglRenderer())) {
-              return await sessionData.graphics.webglRenderer();
-            }
-            return originalGetParameter.call(this, pname);
-          };
-        }
-        return context;
-      } as typeof HTMLCanvasElement.prototype.getContext;
-    }
-  `;
+export interface WebGLProps {
+  /** Desired WebGL vendor string. */
+  readonly vendor: string;
+  /** Desired WebGL renderer string. */
+  readonly renderer: string;
+}
+
+/**
+ * Produces script overriding WebGL context parameters.
+ */
+export class WebGLContext implements Query<string> {
+  constructor(private readonly props: WebGLProps) {}
+  async value(): Promise<string> {
+    const { vendor, renderer } = this.props;
+    const code = `const getContext = HTMLCanvasElement.prototype.getContext;
+HTMLCanvasElement.prototype.getContext = function(type, ...args) {
+  const context = getContext.call(this, type, ...args);
+  if (!context) return context;
+  const getParam = context.getParameter.bind(context);
+  context.getParameter = param => {
+    if (param === context.VENDOR) return "${vendor}";
+    if (param === context.RENDERER) return "${renderer}";
+    return getParam(param);
+  };
+  return context;
+};`;
+    return code;
+  }
 }

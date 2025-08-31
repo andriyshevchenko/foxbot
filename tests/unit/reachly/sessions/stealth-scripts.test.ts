@@ -1,316 +1,132 @@
-import { describe, expect, it } from "vitest";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* @vitest-environment jsdom */
+import { describe, expect, it, vi } from "vitest";
+import type { Query } from "#foxbot/core";
 import {
-  addBoundingRectJitter,
-  humanizeFetchTiming,
-  removeCdcProperties,
-  removeWebDriverProperty,
-  spoofChromeRuntime,
-  spoofDeviceProperties,
-  spoofNavigatorLanguages,
-  spoofNavigatorPlugins,
-  spoofPermissionsApi,
-  spoofScreenProperties,
-  spoofWebGLContext,
-  trackMouseMovements,
+  BoundingRectJitter,
+  CdcRemoval,
+  ChromeRuntime,
+  DeviceProperties,
+  FetchTiming,
+  MouseTracking,
+  NavigatorLanguages,
+  NavigatorPlugins,
+  PermissionsApi,
+  ScreenProperties,
+  WebDriverRemoval,
+  WebGLContext,
 } from "#reachly/session/stealth-scripts";
 
-describe("Stealth Scripts", () => {
-  describe("removeWebDriverProperty", () => {
-    it("returns script including webdriver property marker", () => {
-      expect.assertions(1);
-      const script = removeWebDriverProperty();
-      expect(script, "removeWebDriverProperty script lacked webdriver marker").toContain(
-        '"webdriver"'
-      );
-    });
-    it("returns script defining webdriver getter", () => {
-      expect.assertions(1);
-      const script = removeWebDriverProperty();
-      expect(script, "removeWebDriverProperty script did not define getter").toContain(
-        "get: () =>"
-      );
-    });
+async function run(q: Query<string>): Promise<void> {
+  eval(await q.value());
+}
+
+describe("stealth scripts", () => {
+  it("removes webdriver property", async () => {
+    Object.defineProperty(navigator, "webdriver", { value: true, configurable: true });
+    await run(new WebDriverRemoval());
+    expect((navigator as any).webdriver).toBeUndefined();
   });
 
-  describe("removeCdcProperties", () => {
-    it("returns script removing cdc Array property", () => {
-      expect.assertions(1);
-      const script = removeCdcProperties();
-      expect(script, "removeCdcProperties script missed Array property").toContain(
-        "cdc_adoQpoasnfa76pfcZLmcfl_Array"
-      );
-    });
-    it("returns script removing cdc Promise property", () => {
-      expect.assertions(1);
-      const script = removeCdcProperties();
-      expect(script, "removeCdcProperties script missed Promise property").toContain(
-        "cdc_adoQpoasnfa76pfcZLmcfl_Promise"
-      );
-    });
-    it("returns script removing cdc Symbol property", () => {
-      expect.assertions(1);
-      const script = removeCdcProperties();
-      expect(script, "removeCdcProperties script missed Symbol property").toContain(
-        "cdc_adoQpoasnfa76pfcZLmcfl_Symbol"
-      );
-    });
+  it("removes cdc properties", async () => {
+    (window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Array"] = 1;
+    (window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Promise"] = 1;
+    (window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Symbol"] = 1;
+    await run(new CdcRemoval());
+    expect((window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Array"]).toBeUndefined();
+    expect((window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Promise"]).toBeUndefined();
+    expect((window as any)["cdc_adoQpoasnfa76pfcZLmcfl_Symbol"]).toBeUndefined();
   });
 
-  describe("spoofChromeRuntime", () => {
-    it("returns script including chrome object", () => {
-      expect.assertions(1);
-      const script = spoofChromeRuntime();
-      expect(script, "spoofChromeRuntime script lacked chrome object").toContain('"chrome"');
-    });
-    it("returns script including runtime property", () => {
-      expect.assertions(1);
-      const script = spoofChromeRuntime();
-      expect(script, "spoofChromeRuntime script lacked runtime property").toContain("runtime");
-    });
-    it("returns script including onConnect property", () => {
-      expect.assertions(1);
-      const script = spoofChromeRuntime();
-      expect(script, "spoofChromeRuntime script lacked onConnect property").toContain("onConnect");
-    });
+  it("spoofs chrome runtime", async () => {
+    await run(new ChromeRuntime());
+    expect((window as any).chrome.runtime).toBeDefined();
   });
 
-  describe("spoofPermissionsApi", () => {
-    it("returns script spoofing permissions query", () => {
-      expect.assertions(1);
-      const script = spoofPermissionsApi();
-      expect(script, "spoofPermissionsApi script lacked navigator.permissions.query").toContain(
-        "navigator.permissions.query"
-      );
+  it("spoofs permissions api", async () => {
+    const original = vi.fn().mockResolvedValue({ state: "prompt" });
+    (navigator as any).permissions = { query: original };
+    (globalThis as any).Notification = { permission: "granted" };
+    await run(new PermissionsApi());
+    await expect(navigator.permissions.query({ name: "notifications" } as any)).resolves.toEqual({
+      state: "granted",
     });
-    it("returns script spoofing notifications permission", () => {
-      expect.assertions(1);
-      const script = spoofPermissionsApi();
-      expect(script, "spoofPermissionsApi script lacked notifications spoof").toContain(
-        "notifications"
-      );
-    });
+    await navigator.permissions.query({ name: "geolocation" } as any);
+    expect(original).toHaveBeenCalledWith({ name: "geolocation" });
   });
 
-  describe("spoofNavigatorPlugins", () => {
-    it("returns script including plugins property", () => {
-      expect.assertions(1);
-      const pluginLength = 1;
-      const script = spoofNavigatorPlugins(pluginLength);
-      expect(script, "spoofNavigatorPlugins script lacked plugins property").toContain('"plugins"');
-    });
-    it("returns script spoofing Chrome PDF Plugin", () => {
-      expect.assertions(1);
-      const pluginLength = 1;
-      const script = spoofNavigatorPlugins(pluginLength);
-      expect(script, "spoofNavigatorPlugins script lacked Chrome PDF Plugin").toContain(
-        "Chrome PDF Plugin"
-      );
-    });
-    it("returns script setting plugin length", () => {
-      expect.assertions(1);
-      const pluginLength = 1;
-      const script = spoofNavigatorPlugins(pluginLength);
-      expect(script, "spoofNavigatorPlugins script did not set plugin length").toContain(
-        `length: ${pluginLength}`
-      );
-    });
+  it("spoofs navigator plugins", async () => {
+    await run(new NavigatorPlugins(1));
+    expect(navigator.plugins.length).toBe(1);
+    expect(navigator.plugins[0].name).toBe("Chrome PDF Plugin");
   });
 
-  describe("spoofNavigatorLanguages", () => {
-    it("returns script including languages property", () => {
-      expect.assertions(1);
-      const script = spoofNavigatorLanguages();
-      expect(script, "spoofNavigatorLanguages script lacked languages property").toContain(
-        '"languages"'
-      );
-    });
-    it("returns script referencing session locale", () => {
-      expect.assertions(1);
-      const script = spoofNavigatorLanguages();
-      expect(script, "spoofNavigatorLanguages script did not reference session locale").toContain(
-        "sessionData.host.locale()"
-      );
-    });
+  it("spoofs navigator languages", async () => {
+    await run(new NavigatorLanguages("en-US"));
+    expect(navigator.languages).toEqual(["en-US", "en"]);
   });
 
-  describe("spoofDeviceProperties", () => {
-    it("returns script including platform property", () => {
-      expect.assertions(1);
-      const script = spoofDeviceProperties();
-      expect(script, "spoofDeviceProperties script lacked platform property").toContain(
-        '"platform"'
-      );
-    });
-    it("returns script including deviceMemory property", () => {
-      expect.assertions(1);
-      const script = spoofDeviceProperties();
-      expect(script, "spoofDeviceProperties script lacked deviceMemory property").toContain(
-        '"deviceMemory"'
-      );
-    });
-    it("returns script including hardwareConcurrency property", () => {
-      expect.assertions(1);
-      const script = spoofDeviceProperties();
-      expect(script, "spoofDeviceProperties script lacked hardwareConcurrency property").toContain(
-        '"hardwareConcurrency"'
-      );
-    });
+  it("spoofs device properties", async () => {
+    await run(new DeviceProperties({ platform: "Linux", deviceMemory: 8, hardwareConcurrency: 4 }));
+    expect(navigator.platform).toBe("Linux");
+    expect((navigator as any).deviceMemory).toBe(8);
+    expect(navigator.hardwareConcurrency).toBe(4);
   });
 
-  describe("spoofScreenProperties", () => {
-    it("returns script including width property", () => {
-      expect.assertions(1);
-      const defaultTaskbarHeight = 40;
-      const script = spoofScreenProperties(defaultTaskbarHeight);
-      expect(script, "spoofScreenProperties script lacked width property").toContain('"width"');
-    });
-    it("returns script including height property", () => {
-      expect.assertions(1);
-      const defaultTaskbarHeight = 40;
-      const script = spoofScreenProperties(defaultTaskbarHeight);
-      expect(script, "spoofScreenProperties script lacked height property").toContain('"height"');
-    });
-    it("returns script including availWidth property", () => {
-      expect.assertions(1);
-      const defaultTaskbarHeight = 40;
-      const script = spoofScreenProperties(defaultTaskbarHeight);
-      expect(script, "spoofScreenProperties script lacked availWidth property").toContain(
-        '"availWidth"'
-      );
-    });
-    it("returns script including availHeight property", () => {
-      expect.assertions(1);
-      const defaultTaskbarHeight = 40;
-      const script = spoofScreenProperties(defaultTaskbarHeight);
-      expect(script, "spoofScreenProperties script lacked availHeight property").toContain(
-        '"availHeight"'
-      );
-    });
-    it("returns script using taskbar height", () => {
-      expect.assertions(1);
-      const defaultTaskbarHeight = 40;
-      const script = spoofScreenProperties(defaultTaskbarHeight);
-      expect(script, "spoofScreenProperties script did not use taskbar height").toContain(
-        `${defaultTaskbarHeight}`
-      );
-    });
+  it("spoofs screen properties", async () => {
+    await run(new ScreenProperties({ width: 1920, height: 1080, taskbar: 40 }));
+    expect(screen.width).toBe(1920);
+    expect(screen.height).toBe(1080);
+    expect(screen.availWidth).toBe(1920);
+    expect(screen.availHeight).toBe(1040);
   });
 
-  describe("spoofWebGLContext", () => {
-    it("returns script overriding getContext", () => {
-      expect.assertions(1);
-      const script = spoofWebGLContext();
-      expect(script, "spoofWebGLContext script did not override getContext").toContain(
-        "HTMLCanvasElement.prototype.getContext"
-      );
-    });
-    it("returns script referencing webgl", () => {
-      expect.assertions(1);
-      const script = spoofWebGLContext();
-      expect(script, "spoofWebGLContext script did not reference webgl").toContain("webgl");
-    });
-    it("returns script spoofing gl.VENDOR", () => {
-      expect.assertions(1);
-      const script = spoofWebGLContext();
-      expect(script, "spoofWebGLContext script did not spoof gl.VENDOR").toContain("gl.VENDOR");
-    });
-    it("returns script spoofing gl.RENDERER", () => {
-      expect.assertions(1);
-      const script = spoofWebGLContext();
-      expect(script, "spoofWebGLContext script did not spoof gl.RENDERER").toContain("gl.RENDERER");
-    });
+  it("spoofs webgl context", async () => {
+    const context = {
+      VENDOR: 1,
+      RENDERER: 2,
+      getParameter: vi.fn((p: any) => `orig-${p}`),
+    } as any;
+    HTMLCanvasElement.prototype.getContext = vi.fn(() => context);
+    await run(new WebGLContext({ vendor: "Vendor", renderer: "Renderer" }));
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") as any;
+    expect(gl.getParameter(gl.VENDOR)).toBe("Vendor");
+    expect(gl.getParameter(gl.RENDERER)).toBe("Renderer");
   });
 
-  describe("trackMouseMovements", () => {
-    it("returns script including mouseEvents array", () => {
-      expect.assertions(1);
-      const maxMouseEvents = 50;
-      const script = trackMouseMovements(maxMouseEvents);
-      expect(script, "trackMouseMovements script lacked mouseEvents").toContain("mouseEvents");
-    });
-    it("returns script registering mousemove", () => {
-      expect.assertions(1);
-      const maxMouseEvents = 50;
-      const script = trackMouseMovements(maxMouseEvents);
-      expect(script, "trackMouseMovements script did not register mousemove").toContain(
-        "mousemove"
-      );
-    });
-    it("returns script using max mouse events", () => {
-      expect.assertions(1);
-      const maxMouseEvents = 50;
-      const script = trackMouseMovements(maxMouseEvents);
-      expect(script, "trackMouseMovements script did not use max mouse events").toContain(
-        `${maxMouseEvents}`
-      );
-    });
+  it("adds bounding rect jitter", async () => {
+    const originalRandom = Math.random;
+    Math.random = () => 0.6;
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    const before = el.getBoundingClientRect();
+    await run(new BoundingRectJitter({ amount: 1, offset: 0 }));
+    const after = el.getBoundingClientRect();
+    expect(after.x).toBeCloseTo(before.x + 0.6);
+    Math.random = originalRandom;
   });
 
-  describe("addBoundingRectJitter", () => {
-    it("returns script overriding getBoundingClientRect", () => {
-      expect.assertions(1);
-      const jitterAmount = 0.1;
-      const jitterOffset = 0.5;
-      const script = addBoundingRectJitter(jitterAmount, jitterOffset);
-      expect(
-        script,
-        "addBoundingRectJitter script did not override getBoundingClientRect"
-      ).toContain("getBoundingClientRect");
-    });
-    it("returns script using jitter amount", () => {
-      expect.assertions(1);
-      const jitterAmount = 0.1;
-      const jitterOffset = 0.5;
-      const script = addBoundingRectJitter(jitterAmount, jitterOffset);
-      expect(script, "addBoundingRectJitter script did not use jitter amount").toContain(
-        `${jitterAmount}`
-      );
-    });
-    it("returns script using jitter offset", () => {
-      expect.assertions(1);
-      const jitterAmount = 0.1;
-      const jitterOffset = 0.5;
-      const script = addBoundingRectJitter(jitterAmount, jitterOffset);
-      expect(script, "addBoundingRectJitter script did not use jitter offset").toContain(
-        `${jitterOffset}`
-      );
-    });
+  it("humanizes fetch timing", async () => {
+    vi.useFakeTimers();
+    const fetchSpy = vi.fn().mockResolvedValue("ok");
+    (globalThis as any).fetch = fetchSpy;
+    await run(new FetchTiming({ minDelayMs: 10, maxDelayMs: 10 }));
+    const promise = fetch("/test");
+    vi.advanceTimersByTime(9);
+    expect(fetchSpy).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    await promise;
+    expect(fetchSpy).toHaveBeenCalled();
+    vi.useRealTimers();
   });
 
-  describe("humanizeFetchTiming", () => {
-    it("returns script overriding window.fetch", () => {
-      expect.assertions(1);
-      const minDelayMs = 5;
-      const maxDelayMs = 15;
-      const script = humanizeFetchTiming(minDelayMs, maxDelayMs);
-      expect(script, "humanizeFetchTiming script did not override window.fetch").toContain(
-        "window.fetch"
-      );
-    });
-    it("returns script using setTimeout", () => {
-      expect.assertions(1);
-      const minDelayMs = 5;
-      const maxDelayMs = 15;
-      const script = humanizeFetchTiming(minDelayMs, maxDelayMs);
-      expect(script, "humanizeFetchTiming script did not use setTimeout").toContain("setTimeout");
-    });
-    it("returns script using minimum delay", () => {
-      expect.assertions(1);
-      const minDelayMs = 5;
-      const maxDelayMs = 15;
-      const script = humanizeFetchTiming(minDelayMs, maxDelayMs);
-      expect(script, "humanizeFetchTiming script did not use minimum delay").toContain(
-        `${minDelayMs}`
-      );
-    });
-    it("returns script using maximum delay", () => {
-      expect.assertions(1);
-      const minDelayMs = 5;
-      const maxDelayMs = 15;
-      const script = humanizeFetchTiming(minDelayMs, maxDelayMs);
-      expect(script, "humanizeFetchTiming script did not use maximum delay").toContain(
-        `${maxDelayMs}`
-      );
-    });
+  it("tracks mouse movements", async () => {
+    await run(new MouseTracking(2));
+    const event = new MouseEvent("mousemove", { clientX: 1, clientY: 1 });
+    document.dispatchEvent(event);
+    document.dispatchEvent(event);
+    document.dispatchEvent(event);
+    expect((window as any).__mouseEvents.length).toBe(2);
   });
 });
