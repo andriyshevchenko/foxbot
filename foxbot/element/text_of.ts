@@ -28,6 +28,9 @@ export class TextOf implements Query<string> {
   async value(): Promise<string> {
     const loc = await this.locator.value();
     const txt = await loc.textContent();
-    return (txt ?? "").trim();
+    if (typeof txt !== "string") {
+      return "";
+    }
+    return txt.trim();
   }
 }

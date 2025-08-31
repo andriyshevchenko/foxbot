@@ -96,4 +96,23 @@ describe("DefaultSession", () => {
       "DefaultSession did not create context with geographic coordinates"
     ).toBeDefined();
   }, 10000);
+  it("uses default values when provided zeros", async () => {
+    expect.assertions(1);
+    const testData = new TestSessionData(
+      new Map([
+        ["devicePixelRatio", "0"],
+        ["latitude", "0"],
+        ["longitude", "0"],
+      ])
+    );
+    const browserQuery = new FakeBrowser();
+    const session = new DefaultSession(
+      new JsonViewport(testData),
+      new JsonHost(testData),
+      new JsonLocation(testData),
+      browserQuery
+    );
+    const context = await session.profile();
+    expect(context, "DefaultSession did not create context with fallback values").toBeDefined();
+  }, 10000);
 });

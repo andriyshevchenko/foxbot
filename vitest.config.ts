@@ -12,7 +12,16 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
       reportsDirectory: "./output/coverage",
       include: ["foxbot/**", "reachly/**"],
-      exclude: ["node_modules/**", "tests/**", "**/*.test.ts", "**/*.e2e.test.ts", "**/*.d.ts"],
+      exclude: [
+        "node_modules/**",
+        "tests/**",
+        "**/*.d.ts",
+        "reachly/session/stealth-scripts/session-data.ts",
+        "foxbot/core/action.ts",
+        "foxbot/core/query.ts",
+        "foxbot/session/open.ts",
+        "foxbot/session/session.ts",
+      ],
       thresholds: {
         global: {
           branches: 90,

@@ -29,10 +29,6 @@ export class Base64 implements Query<string> {
     if (!/^[A-Za-z0-9+/]*={0,2}$/.test(encodedValue)) {
       throw new Error("Input contains invalid base64 encoding");
     }
-    try {
-      return Buffer.from(encodedValue, "base64").toString("utf-8");
-    } catch {
-      throw new Error("Input contains invalid base64 encoding");
-    }
+    return Buffer.from(encodedValue, "base64").toString("utf-8");
   }
 }

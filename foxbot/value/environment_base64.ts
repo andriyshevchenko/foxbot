@@ -31,10 +31,6 @@ export class EnvironmentBase64 implements Query<string> {
     if (!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) {
       throw new Error(`Environment variable ${this.variable} contains invalid base64 encoding`);
     }
-    try {
-      return Buffer.from(encoded, "base64").toString("utf-8");
-    } catch {
-      throw new Error(`Environment variable ${this.variable} contains invalid base64 encoding`);
-    }
+    return Buffer.from(encoded, "base64").toString("utf-8");
   }
 }
