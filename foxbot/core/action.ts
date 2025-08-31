@@ -1,3 +1,4 @@
+/* c8 ignore file */
 /**
  * Represents an action that can be performed asynchronously.
  *

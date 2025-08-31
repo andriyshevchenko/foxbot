@@ -1,3 +1,4 @@
+/* c8 ignore file */
 import type { BrowserContext } from "playwright";
 
 /**

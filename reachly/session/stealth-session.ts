@@ -10,8 +10,12 @@ import {
   removeCdcProperties,
   removeWebDriverProperty,
   spoofChromeRuntime,
+  spoofDeviceProperties,
   spoofNavigatorPlugins,
+  spoofNavigatorLanguages,
   spoofPermissionsApi,
+  spoofScreenProperties,
+  spoofWebGLContext,
   trackMouseMovements,
 } from "./stealth-scripts";
 import type { Viewport } from "./viewport";
@@ -26,6 +30,7 @@ export class StealthSession implements Session {
   private static readonly JITTER_OFFSET = 0.5;
   private static readonly MIN_FETCH_DELAY_MS = 5;
   private static readonly MAX_FETCH_DELAY_MS = 15;
+  private static readonly DEFAULT_TASKBAR_HEIGHT = 40;
 
   constructor(
     private readonly base: Session,
@@ -92,13 +97,7 @@ export class StealthSession implements Session {
       location: Location;
     }
   ): Promise<void> {
-    await context.addInitScript(async (sessionData) => {
-      const localeString = await sessionData.host.locale();
-      const localeParts = localeString.split("-");
-      Object.defineProperty(navigator, "languages", {
-        get: () => [localeString, localeParts[0]],
-      });
-    }, sessionData);
+    await context.addInitScript(spoofNavigatorLanguages(), sessionData);
   }
 
   private async injectDevicePropertiesSpoof(
@@ -111,25 +110,7 @@ export class StealthSession implements Session {
       location: Location;
     }
   ): Promise<void> {
-    await context.addInitScript(async (sessionData) => {
-      if (await sessionData.device.platform()) {
-        Object.defineProperty(navigator, "platform", {
-          get: async () => await sessionData.device.platform(),
-        });
-      }
-
-      if (await sessionData.device.deviceMemory()) {
-        Object.defineProperty(navigator, "deviceMemory", {
-          get: async () => await sessionData.device.deviceMemory(),
-        });
-      }
-
-      if (await sessionData.device.hardwareConcurrency()) {
-        Object.defineProperty(navigator, "hardwareConcurrency", {
-          get: async () => await sessionData.device.hardwareConcurrency(),
-        });
-      }
-    }, sessionData);
+    await context.addInitScript(spoofDeviceProperties(), sessionData);
   }
 
   private async injectScreenPropertiesSpoof(
@@ -142,25 +123,10 @@ export class StealthSession implements Session {
       location: Location;
     }
   ): Promise<void> {
-    await context.addInitScript(async (sessionData) => {
-      Object.defineProperty(screen, "width", {
-        get: async () => await sessionData.viewport.screenWidth(),
-      });
-
-      Object.defineProperty(screen, "height", {
-        get: async () => await sessionData.viewport.screenHeight(),
-      });
-
-      Object.defineProperty(screen, "availWidth", {
-        get: async () => await sessionData.viewport.screenWidth(),
-      });
-
-      const screenHeight = await sessionData.viewport.screenHeight();
-      const taskbarHeight = (await sessionData.viewport.taskbarHeight()) || 40;
-      Object.defineProperty(screen, "availHeight", {
-        get: () => screenHeight - taskbarHeight,
-      });
-    }, sessionData);
+    await context.addInitScript(
+      spoofScreenProperties(StealthSession.DEFAULT_TASKBAR_HEIGHT),
+      sessionData
+    );
   }
 
   private async injectWebGLContextSpoof(
@@ -173,35 +139,7 @@ export class StealthSession implements Session {
       location: Location;
     }
   ): Promise<void> {
-    await context.addInitScript(async (sessionData) => {
-      if (
-        (await sessionData.graphics.webglVendor()) ||
-        (await sessionData.graphics.webglRenderer())
-      ) {
-        const originalGetContext = HTMLCanvasElement.prototype.getContext;
-        HTMLCanvasElement.prototype.getContext = function (
-          this: HTMLCanvasElement,
-          contextType: string,
-          ...args: unknown[]
-        ) {
-          const context = originalGetContext.call(this, contextType, ...args);
-          if ((contextType === "webgl" || contextType === "experimental-webgl") && context) {
-            const gl = context as WebGLRenderingContext;
-            const originalGetParameter = gl.getParameter;
-            gl.getParameter = async function (pname: number) {
-              if (pname === gl.VENDOR && (await sessionData.graphics.webglVendor())) {
-                return await sessionData.graphics.webglVendor();
-              }
-              if (pname === gl.RENDERER && (await sessionData.graphics.webglRenderer())) {
-                return await sessionData.graphics.webglRenderer();
-              }
-              return originalGetParameter.call(this, pname);
-            };
-          }
-          return context;
-        } as typeof HTMLCanvasElement.prototype.getContext;
-      }
-    }, sessionData);
+    await context.addInitScript(spoofWebGLContext(), sessionData);
   }
 
   private async injectMouseTracking(context: BrowserContext): Promise<void> {

@@ -1,3 +1,4 @@
+/* c8 ignore file */
 /**
  * Represents a query that can retrieve a value of type T asynchronously.
  *
