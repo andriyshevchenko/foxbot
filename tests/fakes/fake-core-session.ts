@@ -1,5 +1,6 @@
-import type { BrowserContext, Page } from "playwright";
+import type { BrowserContext } from "playwright";
 import type { Session } from "#foxbot/session";
+import { FakeBrowserContext } from "./fake-browser-context";
 
 /**
  * Fake session implementation for foxbot core testing purposes.
@@ -13,9 +14,8 @@ import type { Session } from "#foxbot/session";
  */
 export class FakeCoreSession implements Session {
   async profile(): Promise<BrowserContext> {
-    return {
-      newPage: async () => ({}) as Page,
-      pages: () => [{} as Page],
-    } as unknown as BrowserContext;
+    const context = new FakeBrowserContext();
+    // @ts-expect-error returning fake context
+    return context;
   }
 }

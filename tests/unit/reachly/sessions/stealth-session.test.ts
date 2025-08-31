@@ -8,7 +8,7 @@ import { JsonLocation } from "#reachly/session/location";
 import { StealthSession } from "#reachly/session/stealth-session";
 import { JsonViewport } from "#reachly/session/viewport";
 
-import { FakeIntegrationSession, TestSessionData } from "./index";
+import { FakeSession, TestSessionData } from "./index";
 
 /**
  * Creates a stealth session for testing purposes.
@@ -18,7 +18,7 @@ import { FakeIntegrationSession, TestSessionData } from "./index";
  * @returns StealthSession configured with fake session and test data
  */
 async function stealthSessionFrom(q: Query<string>): Promise<StealthSession> {
-  const session = new FakeIntegrationSession();
+  const session = new FakeSession();
   return new StealthSession(
     session,
     new JsonViewport(q),

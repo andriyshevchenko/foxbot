@@ -67,10 +67,10 @@ describe("DefaultSession", () => {
     );
     const context = await session.profile();
     const page = await context.newPage();
-    const viewport = page.viewportSize();
+    const viewport = page.viewportSize()!;
     await page.close();
     expect(
-      viewport?.width,
+      viewport.width,
       "DefaultSession did not create context with specified viewport width"
     ).toBe(800);
   }, 10000);
