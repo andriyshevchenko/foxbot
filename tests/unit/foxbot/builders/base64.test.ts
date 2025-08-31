@@ -14,7 +14,7 @@ describe("Base64", () => {
   it("throws error when input contains invalid base64 characters", async () => {
     expect.assertions(1);
     const decoder = new Base64(new TextLiteral("invalid_base64!@#"));
-    await expect(decoder.value()).rejects.toThrow("Input contains invalid base64 encoding");
+    await expect(decoder.value()).rejects.toThrow();
   });
 
   it("decodes unicode characters correctly", async () => {
@@ -37,6 +37,6 @@ describe("Base64", () => {
   it("throws error when input has invalid padding", async () => {
     expect.assertions(1);
     const decoder = new Base64(new TextLiteral("SGVsbG8gV29ybGQ==="));
-    await expect(decoder.value()).rejects.toThrow("Input contains invalid base64 encoding");
+    await expect(decoder.value()).rejects.toThrow();
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { Query } from "#foxbot/core";
 import { TextOf } from "#foxbot/element/text_of";
+import type { Query } from "#foxbot/core";
 
 class ProbeLocator {
   async textContent(): Promise<string> {
@@ -16,8 +16,8 @@ class LocatorQuery implements Query<ProbeLocator> {
 }
 
 class EmptyLocator {
-  async textContent(): Promise<string> {
-    return "";
+  async textContent(): Promise<boolean> {
+    return false;
   }
 }
 
@@ -39,7 +39,7 @@ describe("TextOf", () => {
     expect(result, "TextOf did not return trimmed content").toBe("ξ");
   });
 
-  it("returns empty string when locator has no text", async () => {
+  it("returns empty string when locator text is not string", async () => {
     expect.assertions(1);
     const locator = new EmptyLocator();
     const query = new EmptyQuery(locator);

@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { JsonHost } from "#reachly/session/host";
+import { describe, expect, it } from "vitest";
 import { TextLiteral } from "#foxbot/value";
+import { JsonHost } from "#reachly/session/host";
 
 /**
  * Tests for JsonHost methods extracting host attributes from JSON query.
@@ -43,6 +43,16 @@ describe("JsonHost returns headers from json query", () => {
     const host = new JsonHost(new TextLiteral(json));
     const headers = await host.headers();
     expect(headers["X-Test"], "JsonHost failed to return headers").toBe(headerVal);
+  });
+});
+
+describe("JsonHost returns empty headers when json lacks headers", () => {
+  it("returns empty headers object", async () => {
+    expect.assertions(1);
+    const json = '{"userAgent":"UA","locale":"en-US","timezone":"UTC","cookies":[]}';
+    const host = new JsonHost(new TextLiteral(json));
+    const headers = await host.headers();
+    expect(Object.keys(headers).length, "JsonHost did not return empty headers").toBe(0);
   });
 });
 

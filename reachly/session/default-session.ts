@@ -35,9 +35,7 @@ export class DefaultSession implements Session {
       "Sec-Fetch-Site": "none",
       "Sec-Fetch-User": "?1",
     } as const;
-    const httpHeaders = (await this.hostConfig.headers())
-      ? { ...defaultHttpHeaders, ...(await this.hostConfig.headers()) }
-      : defaultHttpHeaders;
+    const httpHeaders = { ...defaultHttpHeaders, ...(await this.hostConfig.headers()) };
     const browser = await this.browser_instance.value();
     const context = await browser.newContext({
       userAgent: await this.hostConfig.userAgent(),

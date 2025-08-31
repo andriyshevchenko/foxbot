@@ -1,24 +1,9 @@
 import { describe, expect, it } from "vitest";
-import type { BrowserContext, Route } from "playwright";
-import type { Session } from "#foxbot/session";
 import { OptimizedSession } from "#foxbot/session/optimized-session";
+import type { BrowserContext } from "playwright";
+import type { Session } from "#foxbot/session";
 
-class Context {
-  handler?: (route: Route) => Promise<void>;
-  async route(_pattern: string, cb: (route: Route) => Promise<void>): Promise<void> {
-    this.handler = cb;
-  }
-}
-
-class BaseSession implements Session {
-  ctx = new Context();
-  async profile(): Promise<BrowserContext> {
-    // @ts-expect-error minimal context
-    return this.ctx;
-  }
-}
-
-class RouteStub implements Route {
+class RouteStub {
   aborted = false;
   continued = false;
   constructor(
@@ -36,6 +21,21 @@ class RouteStub implements Route {
   }
 }
 
+class Context {
+  handler?: (route: RouteStub) => Promise<void>;
+  async route(_pattern: string, cb: (route: RouteStub) => Promise<void>): Promise<void> {
+    this.handler = cb;
+  }
+}
+
+class BaseSession implements Session {
+  ctx = new Context();
+  async profile(): Promise<BrowserContext> {
+    // @ts-expect-error minimal context
+    return this.ctx;
+  }
+}
+
 describe("OptimizedSession", () => {
   it("aborts blocked resource type", async () => {
     expect.assertions(1);
@@ -46,7 +46,6 @@ describe("OptimizedSession", () => {
     await base.ctx.handler!(route);
     expect(route.aborted, "OptimizedSession did not abort blocked type").toBe(true);
   });
-
   it("aborts blocked url pattern", async () => {
     expect.assertions(1);
     const base = new BaseSession();
@@ -56,7 +55,6 @@ describe("OptimizedSession", () => {
     await base.ctx.handler!(route);
     expect(route.aborted, "OptimizedSession did not abort blocked url").toBe(true);
   });
-
   it("continues unblocked resource", async () => {
     expect.assertions(1);
     const base = new BaseSession();
