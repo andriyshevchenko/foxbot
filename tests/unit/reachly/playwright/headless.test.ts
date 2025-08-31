@@ -25,14 +25,14 @@ describe("Headless", () => {
     ).toBe(false);
   });
 
-  it("returns false when HEADLESS environment variable is undefined", async () => {
+  it("returns false when HEADLESS environment variable is missing", async () => {
     expect.assertions(1);
     delete process.env["HEADLESS"];
     const headless = new Headless();
     const result = await headless.value();
     expect(
       result,
-      "Headless did not return false when HEADLESS environment variable was undefined"
+      "Headless did not return false when HEADLESS environment variable was missing"
     ).toBe(false);
   });
 

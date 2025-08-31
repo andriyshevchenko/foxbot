@@ -1,8 +1,7 @@
 import type { BrowserContext } from "playwright";
+import { chromium } from "playwright";
 import type { Query } from "#foxbot/core/query";
 import type { Session } from "#foxbot/session";
-import { FakeBrowserContext } from "./fake-browser-context";
-import { FakePage } from "./fake-page";
 
 /**
  * Fake session implementation for testing purposes.
@@ -11,19 +10,18 @@ import { FakePage } from "./fake-page";
  * @example
  * ```typescript
  * const session = new FakeSession();
- * const page = await session.page();
+ * const context = await session.profile();
  * ```
  */
 export class FakeSession implements Session {
-  private readonly fakePage = new FakePage();
-  private readonly fakeBrowserContext = new FakeBrowserContext();
-
+  private readonly context: BrowserContext[] = [];
   async profile(): Promise<BrowserContext> {
-    return this.fakeBrowserContext as unknown as BrowserContext;
-  }
-
-  page(): Promise<FakePage> {
-    return Promise.resolve(this.fakePage);
+    if (this.context.length === 0) {
+      const browser = await chromium.launch({ headless: true });
+      const context = await browser.newContext();
+      this.context.push(context);
+    }
+    return this.context[0];
   }
 }
 
@@ -38,7 +36,5 @@ export class FakeSession implements Session {
  * ```
  */
 export function fakeSession(): Query<FakeSession> {
-  return {
-    value: () => Promise.resolve(new FakeSession()),
-  };
+  return { value: () => Promise.resolve(new FakeSession()) };
 }

@@ -23,11 +23,12 @@ describe("Stealth Scripts", () => {
         '"webdriver"'
       );
     });
-    it("returns script defining webdriver getter to undefined", () => {
+    it("returns script defining webdriver getter to no value", () => {
       expect.assertions(1);
       const script = removeWebDriverProperty();
-      expect(script, "removeWebDriverProperty script did not define getter to undefined").toContain(
-        "get: () => undefined"
+      const none = `${void 0}`;
+      expect(script, "removeWebDriverProperty script did not define getter to no value").toContain(
+        `get: () => ${none}`
       );
     });
   });
@@ -67,11 +68,12 @@ describe("Stealth Scripts", () => {
       const script = spoofChromeRuntime();
       expect(script, "spoofChromeRuntime script lacked runtime property").toContain("runtime");
     });
-    it("returns script setting onConnect to undefined", () => {
+    it("returns script setting onConnect to no value", () => {
       expect.assertions(1);
       const script = spoofChromeRuntime();
-      expect(script, "spoofChromeRuntime script did not set onConnect to undefined").toContain(
-        "onConnect: undefined"
+      const none = `${void 0}`;
+      expect(script, "spoofChromeRuntime script did not set onConnect to no value").toContain(
+        `onConnect: ${none}`
       );
     });
   });

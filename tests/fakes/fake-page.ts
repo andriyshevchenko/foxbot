@@ -12,16 +12,19 @@ export class FakePage {
   private navigatedUrl = "";
   private readonly locators = new Map<string, FakeLocator>();
 
-  goto(url: string): Promise<null> {
+  goto(url: string): Promise<void> {
     this.navigatedUrl = url;
-    return Promise.resolve(null);
+    return Promise.resolve();
   }
 
   locator(selector: string): FakeLocator {
-    if (!this.locators.has(selector)) {
-      this.locators.set(selector, new FakeLocator());
+    const existing = this.locators.get(selector);
+    if (existing) {
+      return existing;
     }
-    return this.locators.get(selector)!;
+    const created = new FakeLocator();
+    this.locators.set(selector, created);
+    return created;
   }
 
   url(): string {

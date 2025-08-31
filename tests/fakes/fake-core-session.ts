@@ -1,4 +1,5 @@
-import type { BrowserContext, Page } from "playwright";
+import type { BrowserContext } from "playwright";
+import { chromium } from "playwright";
 import type { Session } from "#foxbot/session";
 
 /**
@@ -12,10 +13,14 @@ import type { Session } from "#foxbot/session";
  * ```
  */
 export class FakeCoreSession implements Session {
+  private readonly context: BrowserContext[] = [];
   async profile(): Promise<BrowserContext> {
-    return {
-      newPage: async () => ({}) as Page,
-      pages: () => [{} as Page],
-    } as unknown as BrowserContext;
+    if (this.context.length === 0) {
+      const browser = await chromium.launch({ headless: true });
+      const context = await browser.newContext();
+      await context.newPage();
+      this.context.push(context);
+    }
+    return this.context[0];
   }
 }

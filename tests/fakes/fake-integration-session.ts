@@ -14,13 +14,12 @@ import type { Session } from "#foxbot/session";
  * ```
  */
 export class FakeIntegrationSession implements Session {
-  private contextInstance: BrowserContext | undefined;
-
+  private readonly context: BrowserContext[] = [];
   async profile(): Promise<BrowserContext> {
-    if (!this.contextInstance) {
+    if (this.context.length === 0) {
       const browser = await chromium.launch({ headless: true });
-      this.contextInstance = await browser.newContext();
+      this.context.push(await browser.newContext());
     }
-    return this.contextInstance;
+    return this.context[0];
   }
 }

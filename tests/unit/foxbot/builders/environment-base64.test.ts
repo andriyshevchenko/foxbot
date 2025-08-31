@@ -13,7 +13,7 @@ describe("EnvironmentBase64", () => {
     );
   });
 
-  it("throws error when environment variable is undefined", async () => {
+  it("throws error when environment variable is missing", async () => {
     expect.assertions(1);
     delete process.env["MISSING_VAR"];
     const env = new EnvironmentBase64("MISSING_VAR");

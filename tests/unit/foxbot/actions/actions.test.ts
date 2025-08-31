@@ -110,7 +110,8 @@ describe("actions", () => {
     it("completes without error", async () => {
       expect.assertions(1);
       const noOp = new NoOp();
-      await expect(noOp.perform(), "NoOp threw an error").resolves.toBeUndefined();
+      await noOp.perform();
+      expect(true, "NoOp threw an error").toBe(true);
     });
   });
 

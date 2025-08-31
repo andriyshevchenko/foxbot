@@ -8,6 +8,7 @@ describe("PageOf", () => {
     const session = new FakeCoreSession();
     const sessionPage = new PageOf(session);
     const page = await sessionPage.value();
+    await (await session.profile()).close();
     expect(page, "PageOf did not return page from session host context").toBeDefined();
   });
 });
