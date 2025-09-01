@@ -15,5 +15,7 @@ it("records mouse events", async () => {
   await page.mouse.move(10, 10);
   const value = await page.evaluate("window.mouseEvents.length");
   await browser.close();
-  expect(value > 0, "MouseTracking did not record mouse events").toBe(true);
+  expect(typeof value === "number" && value > 0, "MouseTracking did not record mouse events").toBe(
+    true
+  );
 });

@@ -4,12 +4,12 @@ import type { Host } from "#reachly/session/host";
  * Fake host returning fixed locale for tests
  */
 export class FakeHost implements Host {
-  constructor(private readonly locale: string) {}
+  constructor(private readonly lang: string) {}
   async userAgent(): Promise<string> {
     return "";
   }
   async locale(): Promise<string> {
-    return this.locale;
+    return this.lang;
   }
   async timezone(): Promise<string> {
     return "";

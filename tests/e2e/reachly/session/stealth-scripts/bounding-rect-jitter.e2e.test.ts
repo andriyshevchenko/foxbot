@@ -18,9 +18,11 @@ it("jitters element bounding rectangle", async () => {
   });
   const script = new BoundingRectJitter(new NumberLiteral(1), new NumberLiteral(0.5));
   const code = await script.value();
+  await page.evaluate(() => {
+    Math.random = () => 0;
+  });
   await page.evaluate((c: string) => eval(c), code);
   const value = await page.evaluate(() => {
-    Math.random = () => 0;
     const rect = document.getElementById("t")!.getBoundingClientRect();
     return rect.x;
   });
