@@ -1,5 +1,6 @@
 import type { Browser } from "playwright";
-import { Query } from "#foxbot/core";
+
+import { NumberLiteral } from "#foxbot/core";
 import { OptimizedSession } from "#foxbot/session";
 import { TextLiteral } from "#foxbot/value";
 import {
@@ -12,37 +13,61 @@ import {
   JsonViewport,
   StealthSession,
 } from "#reachly/session";
+import {
+  BoundingRectJitter,
+  CdcRemoval,
+  ChromeRuntime,
+  DeviceProperties,
+  FetchTiming,
+  MouseTracking,
+  NavigatorLanguages,
+  NavigatorPlugins,
+  PermissionsApi,
+  ScreenProperties,
+  WebDriverRemoval,
+  WebGLContext,
+} from "#reachly/session/stealth-scripts";
+
+import type { Query } from "#foxbot/core";
 
 /**
  * Creates LinkedIn session using the decorator composition pattern based on a shared JSON string.
  * The same JSON string is provided to each Json* component so they can extract their respective data.
  */
 function createLinkedInSession(jsonSource: string, browserQuery: Query<Browser>) {
-  return new StealthSession(
-    new OptimizedSession(
-      new AuthenticatedSession(
-        new DefaultSession(
-          new JsonViewport(new TextLiteral(jsonSource)),
-          new JsonHost(new TextLiteral(jsonSource)),
-          new JsonLocation(new TextLiteral(jsonSource)),
-          browserQuery
-        ),
-        new JsonHost(new TextLiteral(jsonSource))
-      )
-    ),
-    new JsonViewport(new TextLiteral(jsonSource)),
-    new JsonGraphics(new TextLiteral(jsonSource)),
-    new JsonHost(new TextLiteral(jsonSource)),
-    new JsonDevice(new TextLiteral(jsonSource)),
-    new JsonLocation(new TextLiteral(jsonSource))
+  const data = new TextLiteral(jsonSource);
+  const base = new OptimizedSession(
+    new AuthenticatedSession(
+      new DefaultSession(
+        new JsonViewport(data),
+        new JsonHost(data),
+        new JsonLocation(data),
+        browserQuery
+      ),
+      new JsonHost(data)
+    )
   );
+  const scripts = [
+    new WebDriverRemoval(),
+    new CdcRemoval(),
+    new ChromeRuntime(),
+    new PermissionsApi(),
+    new NavigatorPlugins(new NumberLiteral(1)),
+    new NavigatorLanguages(new JsonHost(data)),
+    new DeviceProperties(new JsonDevice(data)),
+    new ScreenProperties(new JsonViewport(data), new NumberLiteral(40)),
+    new WebGLContext(new JsonGraphics(data)),
+    new MouseTracking(new NumberLiteral(50)),
+    new BoundingRectJitter(new NumberLiteral(0.1), new NumberLiteral(0.5)),
+    new FetchTiming(new NumberLiteral(5), new NumberLiteral(15)),
+  ];
+  return new StealthSession(base, scripts);
 }
 
 /**
  * Example of using the LinkedIn session composition pattern
  */
 async function main(): Promise<void> {
-  // Shared JSON string consumed by the Json* components (replace placeholder values with real ones)
   const json = `{
     "userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "locale":"en-US",
@@ -63,50 +88,22 @@ async function main(): Promise<void> {
     "latitude":40.7128,
     "longitude":-74.0060
   }`;
-
   const browserQuery: Query<Browser> = {
     async value(): Promise<Browser> {
       const { chromium } = await import("playwright");
-      return await chromium.launch({
-        headless: true, // Change to false to see the browser
+      return chromium.launch({
+        headless: true,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
     },
   };
-
-  try {
-    // Create the composed session
-    const session = createLinkedInSession(json, browserQuery);
-
-    // Use the session
-    await session.profile();
-    console.log("✅ LinkedIn session profile created");
-
-    // The session now has all the capabilities:
-    // - DefaultSession: Basic browser setup
-    // - AuthenticatedSession: LinkedIn cookies
-    // - OptimizedSession: Resource blocking
-    // - StealthSession: Anti-detection
-
-    // You can now use the session for LinkedIn automation
-    // Example: Get host context and create pages
-    const context = await session.profile();
-    const page = await context.newPage();
-
-    console.log("📱 Created page with full session capabilities");
-
-    // Clean up
-    await page.close();
-    const ctx2 = await session.profile();
-    await ctx2.close();
-    console.log("🧹 Session cleaned up");
-  } catch (error) {
-    console.error("❌ Error:", error);
-    process.exit(1);
-  }
+  const session = createLinkedInSession(json, browserQuery);
+  const context = await session.profile();
+  const page = await context.newPage();
+  await page.close();
+  await context.close();
 }
 
-// Run the main function if this file is executed directly
 if (require.main === module) {
   main().catch((error) => {
     console.error("Unhandled error:", error);

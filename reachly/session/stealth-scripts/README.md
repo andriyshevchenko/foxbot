@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `StealthSession` class has been refactored to use a modular approach for injecting stealth scripts. Instead of having one large `addInitScript` call with all stealth mechanisms combined, each stealth technique is now separated into its own function and can be injected independently.
+The `StealthSession` class uses a modular approach for injecting stealth scripts. Instead of having one large `addInitScript` call with all stealth mechanisms combined, each stealth technique is separated into its own query class. These queries are composed into an array and injected together.
 
 ## Benefits of Modular Approach
 
@@ -14,7 +14,7 @@ The `StealthSession` class has been refactored to use a modular approach for inj
 
 ### 2. **Testability**
 
-- Each script function can be unit tested independently
+- Each script query can be unit tested independently
 - Easier to verify the correct script generation for each technique
 - Better test coverage and more focused test cases
 
@@ -42,7 +42,7 @@ The `StealthSession` class has been refactored to use a modular approach for inj
 
 ```
 stealth-scripts/
-├── index.ts                    # Exports all stealth functions
+├── index.ts                    # Exports all stealth queries
 ├── session-data.ts            # TypeScript interfaces
 ├── webdriver-removal.ts       # Removes navigator.webdriver
 ├── cdc-removal.ts            # Removes Chrome DevTools Console properties
@@ -58,84 +58,92 @@ stealth-scripts/
 └── fetch-timing.ts          # Humanizes fetch request timing
 ```
 
-### Injection Methods
+### Script Composition
 
-Each stealth technique has its own injection method in the `StealthSession` class:
+Each stealth technique is an individual query object implementing `Query<string>`. To use them, compose an array of queries and provide it to `StealthSession`:
 
-- `injectWebDriverRemoval()` - Removes automation detection flags
-- `injectCdcRemoval()` - Removes Chrome DevTools Console indicators
-- `injectChromeRuntimeSpoof()` - Creates fake Chrome runtime environment
-- `injectPermissionsApiSpoof()` - Handles permissions API properly
-- `injectNavigatorPluginsSpoof()` - Adds realistic browser plugins
-- `injectNavigatorLanguagesSpoof()` - Sets appropriate language preferences
-- `injectDevicePropertiesSpoof()` - Mimics real device characteristics
-- `injectScreenPropertiesSpoof()` - Sets realistic screen dimensions
-- `injectWebGLContextSpoof()` - Spoofs graphics card information
-- `injectMouseTracking()` - Simulates human mouse movement patterns
-- `injectBoundingRectJitter()` - Adds natural variance to measurements
-- `injectFetchTimingHumanization()` - Adds human-like delays to requests
+```typescript
+import { StealthSession } from "#reachly/session";
+import {
+  BoundingRectJitter,
+  CdcRemoval,
+  ChromeRuntime,
+  DeviceProperties,
+  FetchTiming,
+  MouseTracking,
+  NavigatorLanguages,
+  NavigatorPlugins,
+  PermissionsApi,
+  ScreenProperties,
+  WebDriverRemoval,
+  WebGLContext,
+} from "#reachly/session/stealth-scripts";
+import { NumberLiteral } from "#foxbot/core";
+
+const scripts = [
+  new WebDriverRemoval(),
+  new CdcRemoval(),
+  new ChromeRuntime(),
+  new PermissionsApi(),
+  new NavigatorPlugins(new NumberLiteral(1)),
+  new NavigatorLanguages(host),
+  new DeviceProperties(device),
+  new ScreenProperties(viewport, new NumberLiteral(40)),
+  new WebGLContext(graphics),
+  new MouseTracking(new NumberLiteral(50)),
+  new BoundingRectJitter(new NumberLiteral(0.1), new NumberLiteral(0.5)),
+  new FetchTiming(new NumberLiteral(5), new NumberLiteral(15)),
+];
+
+const stealthSession = new StealthSession(baseSession, scripts);
+```
 
 ## Usage Examples
-
-### Basic Usage (All Techniques)
-
-```typescript
-const stealthSession = new StealthSession(baseSession, viewport, graphics, host, device, location);
-await stealthSession.open(); // Automatically injects all stealth scripts
-```
-
-### Selective Injection (Future Enhancement)
-
-```typescript
-// Future enhancement - selective injection
-const stealthSession = new ConfigurableStealthSession(baseSession, {
-  webdriverRemoval: true,
-  cdcRemoval: true,
-  chromeRuntime: false, // Skip this one
-  // ... other options
-});
-```
 
 ### Custom Script Testing
 
 ```typescript
-import { spoofNavigatorPlugins } from "./stealth-scripts";
+import { NavigatorPlugins } from "./stealth-scripts";
+import { NumberLiteral } from "#foxbot/core";
 
-// Test individual script generation
-const script = spoofNavigatorPlugins(2);
-console.log(script); // Generated JavaScript code
+const script = await new NavigatorPlugins(new NumberLiteral(2)).value();
+console.log(script);
 ```
 
 ## Adding New Stealth Techniques
 
 1. **Create a new script file** in `stealth-scripts/`
-2. **Export a function** that returns a JavaScript string
-3. **Add the export** to `stealth-scripts/index.ts`
-4. **Create an injection method** in `StealthSession`
-5. **Call the method** from `injectStealthScripts()`
+2. **Export a class** that implements `Query<string>`
+3. **Accept `Query<T>` instances** for primitive constructor arguments
+4. **Add the export** to `stealth-scripts/index.ts`
+5. **Include the query in the scripts array** passed to `StealthSession`
 6. **Add unit tests** for the new technique
 
 ### Example New Technique
 
 ```typescript
-// stealth-scripts/example-technique.ts
-export function spoofExampleProperty(value: string): string {
-  return `
-    Object.defineProperty(navigator, "exampleProperty", {
-      get: () => "${value}",
-    });
-  `;
+import { Query } from "#foxbot/core";
+import { TextLiteral } from "#foxbot/value";
+
+export class ExampleProperty implements Query<string> {
+  constructor(private readonly value: Query<string>) {}
+  async value(): Promise<string> {
+    const value = await this.value.value();
+    return `
+      Object.defineProperty(navigator, "exampleProperty", {
+        get: () => "${value}",
+      });
+    `;
+  }
 }
 
-// In StealthSession class
-private async injectExampleSpoof(context: BrowserContext): Promise<void> {
-  await context.addInitScript(spoofExampleProperty("fake-value"));
-}
+const scripts = [new ExampleProperty(new TextLiteral("fake-value"))];
+const stealthSession = new StealthSession(baseSession, scripts);
 ```
 
 ## Testing
 
-Each stealth script function is unit tested to verify:
+Each stealth script query is unit tested to verify:
 
 - Correct JavaScript code generation
 - Proper parameter substitution
@@ -151,9 +159,9 @@ npm test -- stealth-scripts.test.ts
 
 The original monolithic `addInitScript` has been replaced with:
 
-1. **Multiple focused methods** for better organization
+1. **Array-based script composition** for better organization
 2. **Proper TypeScript typing** with `BrowserContext` and `SessionData`
-3. **Individual script injection** for better error isolation
-4. **Modular script functions** for reusability
+3. **Individual script queries** for better error isolation
+4. **Modular script classes** for reusability
 
 This refactoring maintains the same functionality while significantly improving code quality, maintainability, and testability.

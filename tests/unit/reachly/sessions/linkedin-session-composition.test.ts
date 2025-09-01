@@ -1,17 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { TextLiteral } from "#foxbot/value";
 import { OptimizedSession } from "#foxbot/session";
+import { TextLiteral } from "#foxbot/value";
 import {
   AuthenticatedSession,
   DefaultSession,
-  JsonDevice,
-  JsonGraphics,
   JsonHost,
   JsonLocation,
   JsonViewport,
   StealthSession,
 } from "#reachly/session";
+import { WebDriverRemoval } from "#reachly/session/stealth-scripts";
 
 import { FakeBrowser } from "./index";
 
@@ -56,7 +55,6 @@ describe("LinkedIn Session Composition", () => {
     );
     expect(session, "Basic session creation failed").toBeInstanceOf(DefaultSession);
   });
-
   it("creates session with authentication", () => {
     expect.assertions(1);
     const sessionJson = createSessionDataJson();
@@ -72,7 +70,6 @@ describe("LinkedIn Session Composition", () => {
     );
     expect(session, "Authenticated session creation failed").toBeInstanceOf(AuthenticatedSession);
   });
-
   it("creates optimized session", () => {
     expect.assertions(1);
     const sessionJson = createSessionDataJson();
@@ -87,7 +84,6 @@ describe("LinkedIn Session Composition", () => {
     );
     expect(session, "Optimized session creation failed").toBeInstanceOf(OptimizedSession);
   });
-
   it("creates stealth session", () => {
     expect.assertions(1);
     const sessionJson = createSessionDataJson();
@@ -99,11 +95,7 @@ describe("LinkedIn Session Composition", () => {
         new JsonLocation(sessionData),
         new FakeBrowser()
       ),
-      new JsonViewport(sessionData),
-      new JsonGraphics(sessionData),
-      new JsonHost(sessionData),
-      new JsonDevice(sessionData),
-      new JsonLocation(sessionData)
+      [new WebDriverRemoval()]
     );
     expect(session, "Stealth session creation failed").toBeInstanceOf(StealthSession);
   });

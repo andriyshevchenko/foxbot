@@ -1,24 +1,19 @@
+import { Query } from "#foxbot/core";
+import type { Device } from "#reachly/session/device";
+
 /**
  * Spoofs device properties like platform, memory, and hardware concurrency.
  */
-export function spoofDeviceProperties(): string {
-  return `
-    if (await sessionData.device.platform()) {
-      Object.defineProperty(navigator, "platform", {
-        get: async () => await sessionData.device.platform(),
-      });
-    }
-    
-    if (await sessionData.device.deviceMemory()) {
-      Object.defineProperty(navigator, "deviceMemory", {
-        get: async () => await sessionData.device.deviceMemory(),
-      });
-    }
-    
-    if (await sessionData.device.hardwareConcurrency()) {
-      Object.defineProperty(navigator, "hardwareConcurrency", {
-        get: async () => await sessionData.device.hardwareConcurrency(),
-      });
-    }
-  `;
+export class DeviceProperties implements Query<string> {
+  constructor(private readonly device: Device) {}
+  async value(): Promise<string> {
+    const platform = await this.device.platform();
+    const memory = await this.device.deviceMemory();
+    const concurrency = await this.device.hardwareConcurrency();
+    return `
+      Object.defineProperty(navigator, "platform", { get: () => "${platform}" });
+      Object.defineProperty(navigator, "deviceMemory", { get: () => ${memory} });
+      Object.defineProperty(navigator, "hardwareConcurrency", { get: () => ${concurrency} });
+    `;
+  }
 }

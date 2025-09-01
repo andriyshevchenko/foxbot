@@ -1,16 +1,26 @@
+import { Query } from "#foxbot/core";
+
 /**
  * Adds human-like delays to fetch requests.
  */
-export function humanizeFetchTiming(minDelayMs: number, maxDelayMs: number): string {
-  return `
-    const originalFetch = window.fetch;
-    window.fetch = function (input: RequestInfo | URL, init?: RequestInit) {
-      const humanDelay = Math.random() * (${maxDelayMs} - ${minDelayMs}) + ${minDelayMs};
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(originalFetch(input, init));
-        }, humanDelay);
-      });
-    };
-  `;
+export class FetchTiming implements Query<string> {
+  constructor(
+    private readonly min: Query<number>,
+    private readonly max: Query<number>
+  ) {}
+  async value(): Promise<string> {
+    const min = await this.min.value();
+    const max = await this.max.value();
+    return `
+      const originalFetch = window.fetch;
+      window.fetch = function (input, init) {
+        const humanDelay = Math.random() * (${max} - ${min}) + ${min};
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(originalFetch(input, init));
+          }, humanDelay);
+        });
+      };
+    `;
+  }
 }
