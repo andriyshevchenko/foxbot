@@ -5,3 +5,7 @@ export * from "./fake-integration-session";
 export * from "./fake-page";
 export * from "./fake-playwright-queries";
 export * from "./fake-session";
+export * from "./fake-host";
+export * from "./fake-device";
+export * from "./fake-viewport";
+export * from "./fake-graphics";
