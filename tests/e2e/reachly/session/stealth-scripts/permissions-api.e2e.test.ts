@@ -11,12 +11,14 @@ it("overrides navigator permissions query for notifications", async () => {
   const script = new PermissionsApi();
   const code = await script.value();
   await page.evaluate((c: string) => eval(c), code);
-  const value = await page.evaluate(
-    async () => (await navigator.permissions.query({ name: "notifications" })).state
-  );
+  const value = await page.evaluate(async () => {
+    const query = await navigator.permissions.query({ name: "notifications" });
+    const permission = Notification.permission;
+    return { state: query.state, permission };
+  });
   await browser.close();
   expect(
-    value === Notification.permission,
+    value.state === value.permission,
     "PermissionsApi did not return notification permission"
   ).toBe(true);
 });

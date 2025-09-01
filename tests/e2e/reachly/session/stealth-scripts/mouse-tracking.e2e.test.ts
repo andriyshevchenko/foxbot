@@ -11,7 +11,7 @@ it("records mouse events", async () => {
   await page.setViewportSize({ width: 100, height: 100 });
   const script = new MouseTracking(new NumberLiteral(10));
   const code = await script.value();
-  await page.evaluate((c: string) => eval(c), code);
+  await page.evaluate(code + " window.mouseEvents = mouseEvents;");
   await page.mouse.move(10, 10);
   const value = await page.evaluate("window.mouseEvents.length");
   await browser.close();

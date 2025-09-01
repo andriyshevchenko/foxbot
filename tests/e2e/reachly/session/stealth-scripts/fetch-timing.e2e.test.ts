@@ -13,7 +13,7 @@ it("delays fetch requests", async () => {
   const value = await page.evaluate(async (c: string) => {
     eval(c);
     const start = performance.now();
-    await fetch("data:");
+    await fetch("data:text/plain,");
     return performance.now() - start;
   }, code);
   await browser.close();
