@@ -1,11 +1,16 @@
+import { Query } from "#foxbot/core";
+
 /**
- * Removes Chrome DevTools Console (CDC) properties that indicate automation.
+ * Removes Chrome DevTools Console properties that indicate automation.
  */
-export function removeCdcProperties(): string {
-  return `
-    const windowWithCdc = window as unknown as Record<string, unknown>;
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Array"];
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Promise"];
-    delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Symbol"];
-  `;
+export class CdcRemoval implements Query<string> {
+  constructor() {}
+  async value(): Promise<string> {
+    return `
+      const windowWithCdc = window;
+      delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Array"];
+      delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Promise"];
+      delete windowWithCdc["cdc_adoQpoasnfa76pfcZLmcfl_Symbol"];
+    `;
+  }
 }

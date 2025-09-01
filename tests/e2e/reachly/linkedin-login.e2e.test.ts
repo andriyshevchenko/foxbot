@@ -1,6 +1,9 @@
+import { describe, expect, it } from "vitest";
+import type { Browser } from "playwright";
+
 import { Chromium } from "#foxbot/browser";
 import { Lambda, Sequence } from "#foxbot/control";
-import type { Query } from "#foxbot/core";
+import { NumberLiteral } from "#foxbot/core";
 import { CachedSession, OptimizedSession, Session, SessionGuard } from "#foxbot/session";
 import { Headless, StealthArgs } from "#reachly/browser";
 import { LinkedInLogin } from "#reachly/linkedin";
@@ -15,8 +18,22 @@ import {
   SinglePage,
   StealthSession,
 } from "#reachly/session";
-import type { Browser } from "playwright";
-import { describe, expect, it } from "vitest";
+import {
+  BoundingRectJitter,
+  CdcRemoval,
+  ChromeRuntime,
+  DeviceProperties,
+  FetchTiming,
+  MouseTracking,
+  NavigatorLanguages,
+  NavigatorPlugins,
+  PermissionsApi,
+  ScreenProperties,
+  WebDriverRemoval,
+  WebGLContext,
+} from "#reachly/session/stealth-scripts";
+
+import type { Query } from "#foxbot/core";
 
 /**
  * LinkedIn session decorator that composes stealth, optimization, and authentication capabilities.
@@ -45,11 +62,20 @@ class LinkedInSession implements Session {
               new JsonHost(jsonSource)
             )
           ),
-          new JsonViewport(jsonSource),
-          new JsonGraphics(jsonSource),
-          new JsonHost(jsonSource),
-          new JsonDevice(jsonSource),
-          new JsonLocation(jsonSource)
+          [
+            new WebDriverRemoval(),
+            new CdcRemoval(),
+            new ChromeRuntime(),
+            new PermissionsApi(),
+            new NavigatorPlugins(new NumberLiteral(1)),
+            new NavigatorLanguages(new JsonHost(jsonSource)),
+            new DeviceProperties(new JsonDevice(jsonSource)),
+            new ScreenProperties(new JsonViewport(jsonSource), new NumberLiteral(40)),
+            new WebGLContext(new JsonGraphics(jsonSource)),
+            new MouseTracking(new NumberLiteral(50)),
+            new BoundingRectJitter(new NumberLiteral(0.1), new NumberLiteral(0.5)),
+            new FetchTiming(new NumberLiteral(5), new NumberLiteral(15)),
+          ]
         )
       )
     );
@@ -100,11 +126,9 @@ class FakeSessionData implements Query<string> {
 describe.skip("LinkedIn Login E2E Test", () => {
   it("creates session and performs login workflow with real browser", async () => {
     expect.assertions(1);
-
     const sessionData = new FakeSessionData();
     const browserQuery = new Chromium(new Headless(), new StealthArgs());
     const session = new LinkedInSession(sessionData, browserQuery);
-
     await new SessionGuard(
       new Sequence([
         new LinkedInLogin(session),

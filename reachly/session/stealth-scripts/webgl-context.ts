@@ -1,31 +1,29 @@
+import { Query } from "#foxbot/core";
+import type { Graphics } from "#reachly/session/graphics";
+
 /**
  * Spoofs WebGL context to return custom vendor and renderer information.
  */
-export function spoofWebGLContext(): string {
-  return `
-    if ((await sessionData.graphics.webglVendor()) || (await sessionData.graphics.webglRenderer())) {
+export class WebGLContext implements Query<string> {
+  constructor(private readonly graphics: Graphics) {}
+  async value(): Promise<string> {
+    const vendor = await this.graphics.webglVendor();
+    const renderer = await this.graphics.webglRenderer();
+    return `
       const originalGetContext = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (
-        this: HTMLCanvasElement,
-        contextType: string,
-        ...args: unknown[]
-      ) {
-        const context = originalGetContext.call(this, contextType, ...args);
-        if ((contextType === "webgl" || contextType === "experimental-webgl") && context) {
-          const gl = context as WebGLRenderingContext;
+      HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+        const context = originalGetContext.call(this, type, ...args);
+        if ((type === "webgl" || type === "experimental-webgl") && context) {
+          const gl = context;
           const originalGetParameter = gl.getParameter;
-          gl.getParameter = async function (pname: number) {
-            if (pname === gl.VENDOR && (await sessionData.graphics.webglVendor())) {
-              return await sessionData.graphics.webglVendor();
-            }
-            if (pname === gl.RENDERER && (await sessionData.graphics.webglRenderer())) {
-              return await sessionData.graphics.webglRenderer();
-            }
+          gl.getParameter = function (pname) {
+            if (pname === gl.VENDOR) return "${vendor}";
+            if (pname === gl.RENDERER) return "${renderer}";
             return originalGetParameter.call(this, pname);
           };
         }
         return context;
-      } as typeof HTMLCanvasElement.prototype.getContext;
-    }
-  `;
+      };
+    `;
+  }
 }

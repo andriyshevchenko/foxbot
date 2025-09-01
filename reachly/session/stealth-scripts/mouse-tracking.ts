@@ -1,18 +1,20 @@
+import { Query } from "#foxbot/core";
+
 /**
  * Tracks mouse movements to simulate human-like behavior.
  */
-export function trackMouseMovements(maxMouseEvents: number): string {
-  return `
-    let mouseEvents: Array<{ x: number; y: number; timestamp: number }> = [];
-    document.addEventListener("mousemove", (event) => {
-      mouseEvents.push({
-        x: event.clientX,
-        y: event.clientY,
-        timestamp: Date.now(),
+export class MouseTracking implements Query<string> {
+  constructor(private readonly max: Query<number>) {}
+  async value(): Promise<string> {
+    const max = await this.max.value();
+    return `
+      let mouseEvents = [];
+      document.addEventListener("mousemove", (event) => {
+        mouseEvents.push({ x: event.clientX, y: event.clientY, timestamp: Date.now() });
+        if (mouseEvents.length > ${max}) {
+          mouseEvents = mouseEvents.slice(-${max});
+        }
       });
-      if (mouseEvents.length > ${maxMouseEvents}) {
-        mouseEvents = mouseEvents.slice(-${maxMouseEvents});
-      }
-    });
-  `;
+    `;
+  }
 }

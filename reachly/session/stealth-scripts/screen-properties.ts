@@ -1,24 +1,25 @@
+import { Query } from "#foxbot/core";
+import type { Viewport } from "#reachly/session/viewport";
+
 /**
  * Spoofs screen properties like width, height, and available dimensions.
  */
-export function spoofScreenProperties(defaultTaskbarHeight: number): string {
-  return `
-    Object.defineProperty(screen, "width", {
-      get: async () => await sessionData.viewport.screenWidth(),
-    });
-    
-    Object.defineProperty(screen, "height", {
-      get: async () => await sessionData.viewport.screenHeight(),
-    });
-    
-    Object.defineProperty(screen, "availWidth", {
-      get: async () => await sessionData.viewport.screenWidth(),
-    });
-    
-    const screenHeight = await sessionData.viewport.screenHeight();
-    const taskbarHeight = (await sessionData.viewport.taskbarHeight()) || ${defaultTaskbarHeight};
-    Object.defineProperty(screen, "availHeight", {
-      get: () => screenHeight - taskbarHeight,
-    });
-  `;
+export class ScreenProperties implements Query<string> {
+  constructor(
+    private readonly viewport: Viewport,
+    private readonly taskbar: Query<number>
+  ) {}
+  async value(): Promise<string> {
+    const width = await this.viewport.screenWidth();
+    const height = await this.viewport.screenHeight();
+    const bar = await this.viewport.taskbarHeight();
+    const base = bar || (await this.taskbar.value());
+    const avail = height - base;
+    return `
+      Object.defineProperty(screen, "width", { get: () => ${width} });
+      Object.defineProperty(screen, "height", { get: () => ${height} });
+      Object.defineProperty(screen, "availWidth", { get: () => ${width} });
+      Object.defineProperty(screen, "availHeight", { get: () => ${avail} });
+    `;
+  }
 }
